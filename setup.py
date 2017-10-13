@@ -18,6 +18,8 @@ def read(*paths):
 PACKAGE = 'ckan_datapackage_tools'
 NAME = PACKAGE.replace('_', '-')
 INSTALL_REQUIRES = [
+    'datapackage>=1.0,<2.0',
+    'python-slugify>=1.0,<2.0'
 ]
 TESTS_REQUIRE = [
     'pylama',

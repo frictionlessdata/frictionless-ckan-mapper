@@ -1,7 +1,8 @@
 '''Functions for converting between CKAN's dataset and Data Packages.
 '''
-import json
 import re
+import json
+
 import slugify
 
 
