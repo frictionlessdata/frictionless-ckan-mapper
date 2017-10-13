@@ -5,6 +5,8 @@ import unittest
 import datapackage
 import ckan_datapackage_tools.converter as converter
 
+import six
+
 
 class TestConvertToDict(unittest.TestCase):
 
@@ -142,7 +144,7 @@ class TestConvertToDict(unittest.TestCase):
             ]
         })
         result = converter.dataset_to_datapackage(self.dataset_dict)
-        self.assertEquals(result.get('extras'), {
+        self.assertEqual(result.get('extras'), {
             'title_cn': u'國內生產總值',
             'years': [2015, 2016],
             'last_year': 2016,
@@ -409,7 +411,13 @@ class TestDataPackageToDatasetDict(unittest.TestCase):
             'location': {'country': 'China'},
         })
         result = converter.datapackage_to_dataset(self.datapackage)
-        self.assertEquals(result.get('extras'), [
+
+        if six.PY2:
+            assertItemsEqual = self.assertItemsEqual
+        elif six.PY3:
+            assertItemsEqual = self.assertCountEqual
+
+        assertItemsEqual(result.get('extras'), [
             {'key': 'profile', 'value': u'data-package'},
             {'key': 'title_cn', 'value': u'國內生產總值'},
             {'key': 'years', 'value': '[2015, 2016]'},
