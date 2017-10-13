@@ -4,8 +4,6 @@ import json
 import re
 import slugify
 
-import ckan.lib.helpers as h
-
 
 def _convert_to_datapackage_resource(resource_dict):
     '''Convert a CKAN resource dict into a Data Package resource dict.
@@ -34,7 +32,7 @@ def _convert_to_datapackage_resource(resource_dict):
 
     try:
         schema_string = resource_dict.get('schema', '')
-        resource['schema'] = h.json.loads(schema_string)
+        resource['schema'] = json.loads(schema_string)
     except ValueError:
         pass
 
