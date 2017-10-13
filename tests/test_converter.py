@@ -5,6 +5,7 @@ import unittest
 import datapackage
 import ckan_datapackage_tools.converter as converter
 
+import requests_mock
 import six
 
 
@@ -447,41 +448,41 @@ class TestDataPackageToDatasetDict(unittest.TestCase):
         self.assertEquals(result.get('resources')[0].get('name'),
                           resource['title'])
 
-    # @httpretty.activate
-    # def test_resource_url(self):
-    #     url = 'http://www.somewhere.com/data.csv'
-    #     datapackage_dict = {
-    #         'name': 'gdp',
-    #         'title': 'Countries GDP',
-    #         'version': '1.0',
-    #         'resources': [
-    #             {'path': url}
-    #         ],
-    #     }
-    #     httpretty.register_uri(httpretty.GET, url, body='')
+    @requests_mock.Mocker(real_http=True)
+    def test_resource_url(self, mock_requests):
+        url = 'http://www.somewhere.com/data.csv'
+        datapackage_dict = {
+            'name': 'gdp',
+            'title': 'Countries GDP',
+            'version': '1.0',
+            'resources': [
+                {'path': url}
+            ],
+        }
+        mock_requests.register_uri('GET', url, body='')
 
-    #     dp = datapackage.DataPackage(datapackage_dict)
-    #     result = converter.datapackage_to_dataset(dp)
-    #     self.assertEquals(result.get('resources')[0].get('url'),
-    #                       datapackage_dict['resources'][0]['path'])
+        dp = datapackage.DataPackage(datapackage_dict)
+        result = converter.datapackage_to_dataset(dp)
+        self.assertEquals(result.get('resources')[0].get('url'),
+                          datapackage_dict['resources'][0]['path'])
 
-    # @httpretty.activate
-    # def test_resource_url_is_set_to_its_remote_data_path(self):
-    #     url = 'http://www.somewhere.com/data.csv'
-    #     datapackage_dict = {
-    #         'name': 'gdp',
-    #         'title': 'Countries GDP',
-    #         'version': '1.0',
-    #         'resources': [
-    #             {'path': 'data.csv'}
-    #         ],
-    #     }
-    #     httpretty.register_uri(httpretty.GET, url, body='')
-    #     dp = datapackage.DataPackage(
-    #         datapackage_dict, base_path='http://www.somewhere.com')
-    #     result = converter.datapackage_to_dataset(dp)
-    #     self.assertEquals(result.get('resources')[0].get('url'),
-    #                       dp.resources[0].source)
+    @requests_mock.Mocker(real_http=True)
+    def test_resource_url_is_set_to_its_remote_data_path(self, mock_requests):
+        url = 'http://www.somewhere.com/data.csv'
+        datapackage_dict = {
+            'name': 'gdp',
+            'title': 'Countries GDP',
+            'version': '1.0',
+            'resources': [
+                {'path': 'data.csv'}
+            ],
+        }
+        mock_requests.register_uri('GET', url, body='')
+        dp = datapackage.DataPackage(
+            datapackage_dict, base_path='http://www.somewhere.com')
+        result = converter.datapackage_to_dataset(dp)
+        self.assertEquals(result.get('resources')[0].get('url'),
+                          dp.resources[0].source)
 
     def test_resource_description(self):
         resource = {
