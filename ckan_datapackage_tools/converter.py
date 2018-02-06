@@ -137,7 +137,7 @@ def _datapackage_resource_to_ckan_resource(resource):
 
     if resource.descriptor.get('hash'):
         resource_dict['hash'] = resource.descriptor['hash']
-        
+
     if resource.descriptor.get('schema'):
         resource_dict['schema'] = resource.descriptor['schema']
 
