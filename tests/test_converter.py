@@ -276,11 +276,11 @@ class TestDataPackageToDatasetDict(unittest.TestCase):
             'version': '1.0',
         })
         result = converter.datapackage_to_dataset(self.datapackage)
-        datapackage_dict = self.datapackage.to_dict()
-        self.assertEquals(result['name'], datapackage_dict['name'])
-        self.assertEquals(result['title'], datapackage_dict['title'])
+        self.assertEquals(result['name'], self.datapackage.descriptor['name'])
+        self.assertEquals(result['title'],
+                          self.datapackage.descriptor['title'])
         self.assertEquals(result['version'],
-                          datapackage_dict['version'])
+                          self.datapackage.descriptor['version'])
 
     def test_name_is_lowercased(self):
         self.datapackage.descriptor.update({
@@ -513,6 +513,22 @@ class TestDataPackageToDatasetDict(unittest.TestCase):
         result = converter.datapackage_to_dataset(self.datapackage)
         self.assertEquals(result.get('resources')[0].get('hash'),
                           resource['hash'])
+
+    def test_resource_schema(self):
+        schema = {
+            'fields': [
+                {'name': 'id', 'type': 'integer'},
+                {'name': 'title', 'type': 'string'},
+            ]
+        }
+        resource = {
+            'schema': schema
+        }
+
+        self.datapackage.resources[0].descriptor.update(resource)
+        result = converter.datapackage_to_dataset(self.datapackage)
+        self.assertEquals(result.get('resources')[0].get('schema'),
+                          resource['schema'])
 
     def test_resource_path_is_set_to_its_local_data_path(self):
         resource = {
