@@ -276,11 +276,11 @@ class TestDataPackageToDatasetDict(unittest.TestCase):
             'version': '1.0',
         })
         result = converter.datapackage_to_dataset(self.datapackage)
-        datapackage_dict = self.datapackage.to_dict()
-        self.assertEquals(result['name'], datapackage_dict['name'])
-        self.assertEquals(result['title'], datapackage_dict['title'])
+        self.assertEquals(result['name'], self.datapackage.descriptor['name'])
+        self.assertEquals(result['title'],
+                          self.datapackage.descriptor['title'])
         self.assertEquals(result['version'],
-                          datapackage_dict['version'])
+                          self.datapackage.descriptor['version'])
 
     def test_name_is_lowercased(self):
         self.datapackage.descriptor.update({
