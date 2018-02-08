@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import json
 
 import datapackage
 import ckan_datapackage_tools.converter as converter
@@ -198,6 +199,44 @@ class TestConvertToDict(unittest.TestCase):
         resource = result.get('resources')[0]
         self.assertEquals(resource.get('hash'),
                           self.resource_dict['hash'])
+
+    def test_resource_schema(self):
+        self.resource_dict.update({
+            'schema': {
+                'fields': [
+                    {'name': 'id', 'type': 'integer'},
+                    {'name': 'title', 'type': 'string'},
+                ]
+            }
+        })
+        result = converter.dataset_to_datapackage(self.dataset_dict)
+        resource = result.get('resources')[0]
+        self.assertEquals(resource.get('schema'),
+                          self.resource_dict['schema'])
+
+    def test_resource_schema_string(self):
+        schema = {
+            'fields': [
+                {'name': 'id', 'type': 'integer'},
+                {'name': 'title', 'type': 'string'},
+            ]
+        }
+        self.resource_dict.update({
+            'schema': json.dumps(schema)
+        })
+        result = converter.dataset_to_datapackage(self.dataset_dict)
+        resource = result.get('resources')[0]
+        self.assertEquals(resource.get('schema'),
+                          schema)
+
+    def test_resource_schema_url(self):
+        self.resource_dict.update({
+            'schema': 'http://example.com/some.schema.json'
+        })
+        result = converter.dataset_to_datapackage(self.dataset_dict)
+        resource = result.get('resources')[0]
+        self.assertEquals(resource.get('schema'),
+                          self.resource_dict['schema'])
 
     def test_resource_name_lowercases_the_name(self):
         self.resource_dict.update({

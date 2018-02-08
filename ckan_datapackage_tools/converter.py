@@ -32,11 +32,15 @@ def _convert_to_datapackage_resource(resource_dict):
     else:
         resource['name'] = resource_dict['id']
 
-    try:
-        schema_string = resource_dict.get('schema', '')
-        resource['schema'] = json.loads(schema_string)
-    except ValueError:
-        pass
+    schema = resource_dict.get('schema')
+    if isinstance(schema, six.string_types):
+        try:
+            resource['schema'] = json.loads(schema)
+        except ValueError:
+            # Assume it's a path or URL
+            resource['schema'] = schema
+    elif isinstance(schema, dict):
+        resource['schema'] = schema
 
     return resource
 
