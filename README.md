@@ -15,4 +15,10 @@ git clone https://github.com/frictionlessdata/ckan-datapackage-tools.git
 pip install -e .
 ```
 
+##  Schema-field
+
+Please note:  the converter needs an extra schema-field in the ckan-resource that is a json-object. 
+It is strongly recommended to use ckanext-scheming to define the necessary extra field in the default CKAN schema.
+
+
 ## Usage
