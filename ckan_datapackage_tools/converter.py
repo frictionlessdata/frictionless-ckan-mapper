@@ -77,7 +77,7 @@ def dataset_to_datapackage(dataset_dict):
 
     # Ensure unique resource names
     names = {}
-    for resource in dp['resources']:
+    for resource in dp.get('resources', []):
         if resource['name'] in names.keys():
             resource['name'] = resource['name'] + str(names[resource['name']])
             names[resource['name']] += 1
