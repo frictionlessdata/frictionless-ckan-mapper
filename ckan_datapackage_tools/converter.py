@@ -57,9 +57,6 @@ def dataset_to_datapackage(dataset_dict):
         _rename_dict_key('version', 'version'),
         _parse_ckan_url,
         _parse_notes,
-        _parse_license,
-        _parse_author_and_source,
-        _parse_maintainer,
         _parse_tags,
         _parse_extras,
     ]
@@ -177,55 +174,6 @@ def _parse_notes(dataset_dict):
     return result
 
 
-def _parse_license(dataset_dict):
-    result = {}
-    license = {}
-
-    if dataset_dict.get('license_id'):
-        license['type'] = dataset_dict['license_id']
-    if dataset_dict.get('license_title'):
-        license['title'] = dataset_dict['license_title']
-    if dataset_dict.get('license_url'):
-        license['url'] = dataset_dict['license_url']
-
-    if license:
-        result['license'] = license
-
-    return result
-
-
-def _parse_author_and_source(dataset_dict):
-    result = {}
-    source = {}
-
-    if dataset_dict.get('author'):
-        source['name'] = dataset_dict['author']
-    if dataset_dict.get('author_email'):
-        source['email'] = dataset_dict['author_email']
-    if dataset_dict.get('url'):
-        source['web'] = dataset_dict['url']
-
-    if source:
-        result['sources'] = [source]
-
-    return result
-
-
-def _parse_maintainer(dataset_dict):
-    result = {}
-    author = {}
-
-    if dataset_dict.get('maintainer'):
-        author['name'] = dataset_dict['maintainer']
-    if dataset_dict.get('maintainer_email'):
-        author['email'] = dataset_dict['maintainer_email']
-
-    if author:
-        result['author'] = author
-
-    return result
-
-
 def _parse_tags(dataset_dict):
     result = {}
 
@@ -239,20 +187,143 @@ def _parse_tags(dataset_dict):
 
 def _parse_extras(dataset_dict):
     result = {}
-
     extras = [[extra['key'], extra['value']] for extra
               in dataset_dict.get('extras', [])]
-
     for extra in extras:
         try:
             extra[1] = json.loads(extra[1])
         except (ValueError, TypeError):
             pass
-
+    sources = _parse_organization_as_primary_source(dataset_dict)
+    licenses = _parse_primary_license(dataset_dict)
+    contributors = _parse_primary_contributors(dataset_dict)
     if extras:
-        result['extras'] = dict(extras)
-
+        extras_dict = dict(extras)
+        result.update(_parse_profile(extras_dict))
+        _parse_extra_sources(extras_dict, sources)
+        _parse_extra_licenses(extras_dict, licenses)
+        _parse_extra_contributors(extras_dict, contributors)
+        if extras_dict:
+            result['extras'] = extras_dict
+    if sources:
+        result['sources'] = sources
+    if licenses:
+        result['licenses'] = licenses
+    if contributors:
+        result['contributors'] = contributors
     return result
+
+
+def _parse_profile(dataset_dict):
+    result = {}
+    profile = dataset_dict.pop('profile', '')
+    if profile:
+        result['profile'] = profile
+    return result
+
+
+def _parse_organization_as_primary_source(dataset_dict):
+    all_sources = []
+    source = {}
+    organization = dataset_dict.get('organization')
+    if organization.get('is_organization', False):
+        source['title'] = organization.get('name', organization.get('title'))
+    if source.get('title'):
+        if dataset_dict.get('url'):
+            source['path'] = dataset_dict['url']
+        all_sources.append(source)
+    return all_sources
+
+
+def _parse_extra_sources(extras_dict, sources):
+    for source in extras_dict.pop('sources', []):
+        parsed = _parse_source(source)
+        if parsed:
+            source.update(parsed)
+        sources.append(source)
+
+
+def _parse_source(dataset_dict):
+    source = {}
+    # ckan values trump frictionless values
+    if dataset_dict.get('url'):
+        source['path'] = dataset_dict['url']
+    return source
+
+
+def _parse_primary_license(dataset_dict):
+    licenses = []
+    license = _parse_license(dataset_dict)
+    if license:
+        licenses.append(license)
+    return licenses
+
+
+def _parse_extra_licenses(extras_dict, licenses):
+    for license in extras_dict.pop('licenses', []):
+        parsed = _parse_license(license)
+        # include existing valid license properties
+        if parsed:
+            license.update(parsed)
+        licenses.append(license)
+
+
+def _parse_license(dataset_dict):
+    license = {}
+    # ckan values trump frictionless values
+    if dataset_dict.get('license_id'):
+        license['name'] = dataset_dict['license_id']
+    if dataset_dict.get('license_title'):
+        license['title'] = dataset_dict['license_title']
+    if dataset_dict.get('license_url'):
+        license['path'] = dataset_dict['license_url']
+    return license
+
+
+def _parse_primary_contributors(dataset_dict):
+    contributors = []
+    for parser in [_parse_author_as_contributor,
+                   _parse_maintainer_as_contributor]:
+        parsed = parser(dataset_dict)
+        if parsed:
+            contributors.append(parsed)
+    return contributors
+
+
+def _parse_author_as_contributor(dataset_dict):
+    contributor = {}
+    if dataset_dict.get('author'):
+        contributor['title'] = dataset_dict['author']
+        contributor['role'] = 'author'
+    if dataset_dict.get('author_email'):
+        contributor['email'] = dataset_dict['author_email']
+    return contributor
+
+
+def _parse_maintainer_as_contributor(dataset_dict):
+    contributor = {}
+    if dataset_dict.get('maintainer'):
+        contributor['title'] = dataset_dict['maintainer']
+        contributor['role'] = 'maintainer'
+    if dataset_dict.get('maintainer_email'):
+        contributor['email'] = dataset_dict['maintainer_email']
+    return contributor
+
+
+def _parse_extra_contributors(extras, contributors):
+    for contributor in extras.pop('contributors', []):
+        parsed = _parse_contributor(contributor)
+        if parsed:
+            contributors.append(parsed)
+
+
+def _parse_contributor(contributor):
+    if contributor.get('title'):
+        if not contributor.get('role'):
+            contributor['role'] = 'contributor'
+    else:
+        contributor = {}
+    return contributor
 
 
 def _datapackage_parse_license(datapackage_dict):
