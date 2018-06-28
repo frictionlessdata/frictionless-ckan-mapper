@@ -128,7 +128,7 @@ def _datapackage_resource_to_ckan_resource(resource):
     elif resource.inline:
         resource_dict['data'] = resource.source
     else:
-        raise NotImplemented('Multipart resources not yet supported')
+        raise NotImplementedError('Multipart resources not yet supported')
 
     if resource.descriptor.get('description'):
         resource_dict['description'] = resource.descriptor['description']
