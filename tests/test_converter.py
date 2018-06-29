@@ -92,6 +92,38 @@ class TestConvertToDict(unittest.TestCase):
         }])
         self.assertEquals(result.get('license'), None)
 
+    def test_dataset_license_and_licenses_as_extras(self):
+        primary_license = {
+            'license_id': 'cc-zero',
+            'license_title': 'Creative Commons CC Zero License (cc-zero)',
+            'license_url': 'http://opendefinition.org/licenses/cc-zero/'
+        }
+        extra_licenses = [{
+            'type': 'cc-by-sa',
+            'title': 'Creative Commons Attribution Share-Alike (cc-by-sa)',
+            'url': 'http://www.opendefinition.org/licenses/cc-by-sa/'
+        }]
+        self.dataset_dict.update(primary_license)
+        self.dataset_dict.update({
+            'extras': [{
+                'key':'licenses',
+                'value': extra_licenses
+             }]
+        })
+        result = converter.dataset_to_datapackage(self.dataset_dict)
+        self.assertEquals(result.get('licenses'), [{
+            'name': 'cc-zero',
+            'title': 'Creative Commons CC Zero License (cc-zero)',
+            'path': 'http://opendefinition.org/licenses/cc-zero/'
+        },
+        {
+            'name': 'cc-by-sa',
+            'title': 'Creative Commons Attribution Share-Alike (cc-by-sa)',
+            'path': 'http://www.opendefinition.org/licenses/cc-by-sa/'
+         }
+        ])
+        self.assertEquals(result.get('license'), None)
+
     def test_dataset_author_and_source(self):
         sources = [{
                 "author": "someone",
@@ -162,6 +194,45 @@ class TestConvertToDict(unittest.TestCase):
             self.assertEquals(result['sources'], expected_result)
             self.assertEquals(result.get('source'), None)
 
+    def test_organisation_as_source_and_extra_sources(self):
+        extra_sources = [{
+            'name': 'source1',
+            'email': 'source1@test.com',
+            'url': 'http://source1.com'
+        },
+        {
+            'title': 'source2',
+            'email': 'source2@test.com',
+            'path': 'http://source2.com'
+        }]
+        self.dataset_dict.update({
+            'url' : 'http://worldbankandoecd.com'
+        })
+        self.dataset_dict.update({
+            'extras': [{
+                'key': 'sources',
+                'value': extra_sources
+            }]
+        })
+        result = converter.dataset_to_datapackage(self.dataset_dict)
+        self.assertEquals(result.get('sources'), [
+            {
+                'title': 'World Bank and OECD',
+                'path': 'http://worldbankandoecd.com'
+            },
+            {
+                'title': 'source1',
+                'email': 'source1@test.com',
+                'path': 'http://source1.com'
+            },
+            {
+                'title': 'source2',
+                'email': 'source2@test.com',
+                'path': 'http://source2.com'
+            }
+        ])
+        self.assertEquals(result.get('source'), None)
+
     def test_dataset_author_as_contributor(self):
         self.dataset_dict.update({
             'author': 'John Smith',
@@ -199,6 +270,73 @@ class TestConvertToDict(unittest.TestCase):
         self.assertEquals(result.get('contributors'), expected_result)
         self.assertEquals(result.get('author'), None)
         self.assertEquals(result.get('maintainer'), None)
+
+    def test_dataset_maintainer_and_author_and_extras_as_contributors(self):
+        author = {
+            'author': 'John Smith',
+            'author_email': 'jsmith@email.com',
+        }
+        maintainer = {
+            'maintainer': 'Jane Smith',
+            'maintainer_email': 'janesmith@email.com',
+        }
+        extras = [{
+            'title': 'Bob Smith',
+            'role': 'publisher',
+            'path': 'http://bobsmith.com'
+        },
+        {
+            'name': 'Peter Invalid Smith',
+            'email': 'petersmith@email.com',
+            'role': 'maintainer'
+        },
+        {
+            'email': 'noTitle@email.com',
+            'role': 'contributor'
+        },
+        {
+            'title': 'Jo Smith',
+            'organization': 'org1'
+        },
+        {
+            'title': 'Sam Smith',
+        }]
+        self.dataset_dict.update(author)
+        self.dataset_dict.update(maintainer)
+        self.dataset_dict.update({
+            'extras': [{
+                'key': 'contributors',
+                'value': extras
+            }]
+        })
+        result = converter.dataset_to_datapackage(self.dataset_dict)
+        log.info('contributors result %r', result.get('contributors'))
+        self.assertEquals(result.get('contributors'), [
+            {
+                'title': 'John Smith',
+                'email': 'jsmith@email.com',
+                'role': 'author'
+            },
+            {
+                'title': 'Jane Smith',
+                'email': 'janesmith@email.com',
+                'role': 'maintainer'
+            },
+            {
+                'title': 'Bob Smith',
+                'role': 'publisher',
+                'path': 'http://bobsmith.com'
+            },
+            {
+                'title': 'Jo Smith',
+                'organization': 'org1'
+            },
+            {
+                'title': 'Sam Smith'
+            }
+        ])
+        self.assertEquals(result.get('maintainer'), None)
+        self.assertEquals(result.get('author'), None)
 
     def test_dataset_author_as_contributor_and_source(self):
         self.dataset_dict.update({
