@@ -310,7 +310,6 @@ class TestConvertToDict(unittest.TestCase):
             }]
         })
         result = converter.dataset_to_datapackage(self.dataset_dict)
-        log.info('contributors result %r', result.get('contributors'))
         self.assertEquals(result.get('contributors'), [
             {
                 'title': 'John Smith',
