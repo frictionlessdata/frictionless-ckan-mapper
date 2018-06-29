@@ -241,15 +241,16 @@ def _parse_extra_sources(extras_dict, sources):
         if parsed and parsed.get('title'):
             sources.append(parsed)
 
+
 def _parse_extra_source(extra_source):
     source = {}
     if extra_source.get('name'):
         extra_source['title'] = extra_source.pop('name')
     if extra_source.get('url'):
         extra_source['path'] = extra_source.pop('url')
-    for property in ['title','path','email']:
-        if extra_source.get(property):
-            source[property] = extra_source[property]
+    for prop in ['title', 'path', 'email']:
+        if extra_source.get(prop):
+            source[prop] = extra_source[prop]
     return source
 
 
@@ -287,15 +288,16 @@ def _parse_extra_license(extra_license):
         extra_license['name'] = extra_license.pop('type')
     if extra_license.get('url'):
         extra_license['path'] = extra_license.pop('url')
-    for property in ['name', 'path', 'title']:
-        if extra_license.get(property):
-            license[property] = extra_license[property]
+    for prop in ['name', 'path', 'title']:
+        if extra_license.get(prop):
+            license[prop] = extra_license[prop]
     return license
 
 
 def _parse_primary_contributors(dataset_dict):
     contributors = []
-    for parser in [_parse_author_as_contributor, _parse_maintainer_as_contributor]:
+    for parser in [_parse_author_as_contributor,
+                   _parse_maintainer_as_contributor]:
         parsed = parser(dataset_dict)
         if parsed and parsed.get('title'):
             contributors.append(parsed)
@@ -331,9 +333,9 @@ def _parse_extra_contributors(extras, contributors):
 
 def _parse_extra_contributor(extra_contributor):
     contributor = {}
-    for property in ['title','path','email','role','organization']:
-        if extra_contributor.get(property):
-            contributor[property] = extra_contributor[property]
+    for prop in ['title', 'path', 'email', 'role', 'organization']:
+        if extra_contributor.get(prop):
+            contributor[prop] = extra_contributor[prop]
     return contributor
 
 

@@ -106,50 +106,42 @@ class TestConvertToDict(unittest.TestCase):
         self.dataset_dict.update(primary_license)
         self.dataset_dict.update({
             'extras': [{
-                'key':'licenses',
+                'key': 'licenses',
                 'value': extra_licenses
-             }]
+            }]
         })
         result = converter.dataset_to_datapackage(self.dataset_dict)
         self.assertEquals(result.get('licenses'), [{
             'name': 'cc-zero',
             'title': 'Creative Commons CC Zero License (cc-zero)',
             'path': 'http://opendefinition.org/licenses/cc-zero/'
-        },
-        {
+        }, {
             'name': 'cc-by-sa',
             'title': 'Creative Commons Attribution Share-Alike (cc-by-sa)',
             'path': 'http://www.opendefinition.org/licenses/cc-by-sa/'
-         }
-        ])
+        }])
         self.assertEquals(result.get('license'), None)
 
     def test_dataset_author_and_source(self):
         sources = [{
-                "author": "someone",
-                "title": "World Bank and OECD Data",
-                "author_email": "someone@worldbank.org",
-                "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD"
-            },
-            {
-                "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD2"
-            },
-            {
-                "title": "World Bank and OECD Data",
-                "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD3"
-            },
-            {
-                "title": "World Bank and OECD",
-                "path": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD4"
-            },
-            {},
-            {
-                "author_email": "someone6@worldbank.org",
-            },
-            {
-                "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD7"
-            },
-            ]
+            "author": "someone",
+            "title": "World Bank and OECD Data",
+            "author_email": "someone@worldbank.org",
+            "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD"
+        }, {
+            "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD2"
+        }, {
+            "title": "World Bank and OECD Data",
+            "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD3"
+        }, {
+            "title": "World Bank and OECD",
+            "path": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD4"
+        }, {
+        }, {
+            "author_email": "someone6@worldbank.org",
+        }, {
+            "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD7"
+        }]
         expected_results = [
             [{
                 "title": "World Bank and OECD",
@@ -200,13 +192,13 @@ class TestConvertToDict(unittest.TestCase):
             'email': 'source1@test.com',
             'url': 'http://source1.com'
         },
-        {
-            'title': 'source2',
-            'email': 'source2@test.com',
-            'path': 'http://source2.com'
-        }]
+            {
+                'title': 'source2',
+                'email': 'source2@test.com',
+                'path': 'http://source2.com'
+            }]
         self.dataset_dict.update({
-            'url' : 'http://worldbankandoecd.com'
+            'url': 'http://worldbankandoecd.com'
         })
         self.dataset_dict.update({
             'extras': [{
@@ -285,22 +277,22 @@ class TestConvertToDict(unittest.TestCase):
             'role': 'publisher',
             'path': 'http://bobsmith.com'
         },
-        {
-            'name': 'Peter Invalid Smith',
-            'email': 'petersmith@email.com',
-            'role': 'maintainer'
-        },
-        {
-            'email': 'noTitle@email.com',
-            'role': 'contributor'
-        },
-        {
-            'title': 'Jo Smith',
-            'organization': 'org1'
-        },
-        {
-            'title': 'Sam Smith',
-        }]
+            {
+                'name': 'Peter Invalid Smith',
+                'email': 'petersmith@email.com',
+                'role': 'maintainer'
+            },
+            {
+                'email': 'noTitle@email.com',
+                'role': 'contributor'
+            },
+            {
+                'title': 'Jo Smith',
+                'organization': 'org1'
+            },
+            {
+                'title': 'Sam Smith',
+            }]
         self.dataset_dict.update(author)
         self.dataset_dict.update(maintainer)
         self.dataset_dict.update({
