@@ -23,6 +23,11 @@ class TestConvertToDict(unittest.TestCase):
             'title': 'Countries GDP',
             'version': '1.0',
             'resources': [self.resource_dict],
+            'organization': {
+                'title': 'World Bank',
+                'name': 'World Bank and OECD',
+                'is_organization': True
+            }
         }
 
     def test_basic_dataset_in_setup_is_valid(self):
@@ -36,7 +41,11 @@ class TestConvertToDict(unittest.TestCase):
                 {
                     'name': 'the-resource',
                 }
-            ]
+            ],
+            'organization': {
+                'title': 'World Bank',
+                'name': 'World Bank and OECD'
+            }
 
         }
 
@@ -75,23 +84,163 @@ class TestConvertToDict(unittest.TestCase):
             'license_url': license['url'],
         })
         result = converter.dataset_to_datapackage(self.dataset_dict)
-        self.assertEquals(result.get('license'), license)
 
-    def test_dataset_author_and_source(self):
-        sources = [
-            {
-                'name': 'World Bank and OECD',
-                'email': 'someone@worldbank.org',
-                'web': 'http://data.worldbank.org/indicator/NY.GDP.MKTP.CD',
-            }
-        ]
+        self.assertEquals(result.get('licenses'), [{
+            'name': 'cc-zero',
+            'title': 'Creative Commons CC Zero License (cc-zero)',
+            'path': 'http://opendefinition.org/licenses/cc-zero/'
+        }])
+        self.assertEquals(result.get('license'), None)
+
+    def test_dataset_license_and_licenses_as_extras(self):
+        primary_license = {
+            'license_id': 'cc-zero',
+            'license_title': 'Creative Commons CC Zero License (cc-zero)',
+            'license_url': 'http://opendefinition.org/licenses/cc-zero/'
+        }
+        extra_licenses = [{
+            'type': 'cc-by-sa',
+            'title': 'Creative Commons Attribution Share-Alike (cc-by-sa)',
+            'url': 'http://www.opendefinition.org/licenses/cc-by-sa/'
+        }]
+        self.dataset_dict.update(primary_license)
         self.dataset_dict.update({
-            'author': sources[0]['name'],
-            'author_email': sources[0]['email'],
-            'url': sources[0]['web']
+            'extras': [{
+                'key': 'licenses',
+                'value': extra_licenses
+            }]
         })
         result = converter.dataset_to_datapackage(self.dataset_dict)
-        self.assertEquals(result.get('sources'), sources)
+        self.assertEquals(result.get('licenses'), [{
+            'name': 'cc-zero',
+            'title': 'Creative Commons CC Zero License (cc-zero)',
+            'path': 'http://opendefinition.org/licenses/cc-zero/'
+        }, {
+            'name': 'cc-by-sa',
+            'title': 'Creative Commons Attribution Share-Alike (cc-by-sa)',
+            'path': 'http://www.opendefinition.org/licenses/cc-by-sa/'
+        }])
+        self.assertEquals(result.get('license'), None)
+
+    def test_dataset_author_and_source(self):
+        sources = [{
+            "author": "someone",
+            "title": "World Bank and OECD Data",
+            "author_email": "someone@worldbank.org",
+            "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD"
+        }, {
+            "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD2"
+        }, {
+            "title": "World Bank and OECD Data",
+            "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD3"
+        }, {
+            "title": "World Bank and OECD",
+            "path": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD4"
+        }, {
+        }, {
+            "author_email": "someone6@worldbank.org",
+        }, {
+            "url": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD7"
+        }]
+        expected_results = [
+            [{
+                "title": "World Bank and OECD",
+                "path": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD"
+            }],
+            [{
+                "title": "World Bank and OECD",
+                "path": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD2"
+            }],
+            [{
+                "title": "World Bank and OECD",
+                "path": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD3"
+            }],
+            [{
+                "title": "World Bank and OECD"
+            }],
+            [{
+                "title": "World Bank and OECD",
+            }],
+            [{
+                "title": "World Bank and OECD",
+            }],
+            [{
+                "title": "World Bank and OECD",
+                "path": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD7"
+            }],
+        ]
+        for source, expected_result in zip(sources, expected_results):
+            self.dataset_dict = {
+                'name': 'gdp',
+                'title': 'Countries GDP',
+                'version': '1.0',
+                'resources': [self.resource_dict],
+                'organization': {
+                    'title': 'World Bank',
+                    'name': 'World Bank and OECD',
+                    'is_organization': True
+                }
+            }
+            self.dataset_dict.update(source)
+            result = converter.dataset_to_datapackage(self.dataset_dict)
+            self.assertEquals(result['sources'], expected_result)
+            self.assertEquals(result.get('source'), None)
+
+    def test_organisation_as_source_and_extra_sources(self):
+        extra_sources = [{
+            'name': 'source1',
+            'email': 'source1@test.com',
+            'url': 'http://source1.com'
+        },
+            {
+                'title': 'source2',
+                'email': 'source2@test.com',
+                'path': 'http://source2.com'
+            }]
+        self.dataset_dict.update({
+            'url': 'http://worldbankandoecd.com'
+        })
+        self.dataset_dict.update({
+            'extras': [{
+                'key': 'sources',
+                'value': extra_sources
+            }]
+        })
+        result = converter.dataset_to_datapackage(self.dataset_dict)
+        self.assertEquals(result.get('sources'), [
+            {
+                'title': 'World Bank and OECD',
+                'path': 'http://worldbankandoecd.com'
+            },
+            {
+                'title': 'source1',
+                'email': 'source1@test.com',
+                'path': 'http://source1.com'
+            },
+            {
+                'title': 'source2',
+                'email': 'source2@test.com',
+                'path': 'http://source2.com'
+            }
+        ])
+        self.assertEquals(result.get('source'), None)
+
+    def test_dataset_author_as_contributor(self):
+        self.dataset_dict.update({
+            'author': 'John Smith',
+            'author_email': 'jsmith@email.com'
+        })
+        expected_result = [
+            {
+                'title': 'John Smith',
+                'email': 'jsmith@email.com',
+                'role': 'author'
+            }
+        ]
+        result = converter.dataset_to_datapackage(self.dataset_dict)
+        self.assertEquals(result.get('contributors'), expected_result)
+        self.assertEquals(result.get('author'), None)
+        self.assertEquals(result.get('maintainer'), None)
 
     def test_dataset_maintainer(self):
         author = {
@@ -102,8 +251,102 @@ class TestConvertToDict(unittest.TestCase):
             'maintainer': author['name'],
             'maintainer_email': author['email'],
         })
+        expected_result = [
+            {
+                'title': 'John Smith',
+                'email': 'jsmith@email.com',
+                'role': 'maintainer'
+            }
+        ]
         result = converter.dataset_to_datapackage(self.dataset_dict)
-        self.assertEquals(result.get('author'), author)
+        self.assertEquals(result.get('contributors'), expected_result)
+        self.assertEquals(result.get('author'), None)
+        self.assertEquals(result.get('maintainer'), None)
+
+    def test_dataset_maintainer_and_author_and_extras_as_contributors(self):
+        author = {
+            'author': 'John Smith',
+            'author_email': 'jsmith@email.com',
+        }
+        maintainer = {
+            'maintainer': 'Jane Smith',
+            'maintainer_email': 'janesmith@email.com',
+        }
+        extras = [{
+            'title': 'Bob Smith',
+            'role': 'publisher',
+            'path': 'http://bobsmith.com'
+        },
+            {
+                'name': 'Peter Invalid Smith',
+                'email': 'petersmith@email.com',
+                'role': 'maintainer'
+            },
+            {
+                'email': 'noTitle@email.com',
+                'role': 'contributor'
+            },
+            {
+                'title': 'Jo Smith',
+                'organization': 'org1'
+            },
+            {
+                'title': 'Sam Smith',
+            }]
+        self.dataset_dict.update(author)
+        self.dataset_dict.update(maintainer)
+        self.dataset_dict.update({
+            'extras': [{
+                'key': 'contributors',
+                'value': extras
+            }]
+        })
+        result = converter.dataset_to_datapackage(self.dataset_dict)
+        self.assertEquals(result.get('contributors'), [
+            {
+                'title': 'John Smith',
+                'email': 'jsmith@email.com',
+                'role': 'author'
+            },
+            {
+                'title': 'Jane Smith',
+                'email': 'janesmith@email.com',
+                'role': 'maintainer'
+            },
+            {
+                'title': 'Bob Smith',
+                'role': 'publisher',
+                'path': 'http://bobsmith.com'
+            },
+            {
+                'title': 'Jo Smith',
+                'organization': 'org1'
+            },
+            {
+                'title': 'Sam Smith'
+            }
+        ])
+        self.assertEquals(result.get('maintainer'), None)
+        self.assertEquals(result.get('author'), None)
+
+    def test_dataset_author_as_contributor_and_source(self):
+        self.dataset_dict.update({
+            'author': 'John Smith',
+            'author_email': 'jsmith@email.com',
+            'url': 'http://data.worldbank.org/indicator/NY.GDP.MKTP.CD'
+        })
+        expected_sources = [{
+            "title": "World Bank and OECD",
+            "path": "http://data.worldbank.org/indicator/NY.GDP.MKTP.CD"
+        }]
+        expected_contributors = [{
+            'title': 'John Smith',
+            'email': 'jsmith@email.com',
+            'role': 'author'
+        }]
+        result = converter.dataset_to_datapackage(self.dataset_dict)
+        self.assertEquals(result['sources'], expected_sources)
+        self.assertEquals(result['contributors'], expected_contributors)
 
     def test_dataset_tags(self):
         keywords = [
