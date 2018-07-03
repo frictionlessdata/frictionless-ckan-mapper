@@ -79,8 +79,9 @@ def dataset_to_datapackage(dataset_dict):
     names = {}
     for resource in dp.get('resources', []):
         if resource['name'] in names.keys():
-            resource['name'] = resource['name'] + str(names[resource['name']])
-            names[resource['name']] += 1
+            old_resource_name = resource['name']
+            resource['name'] = resource['name'] + str(names[old_res_name])
+            names[old_res_name] += 1
         else:
             names[resource['name']] = 0
 
