@@ -80,8 +80,8 @@ def dataset_to_datapackage(dataset_dict):
     for resource in dp.get('resources', []):
         if resource['name'] in names.keys():
             old_resource_name = resource['name']
-            resource['name'] = resource['name'] + str(names[old_res_name])
-            names[old_res_name] += 1
+            resource['name'] = resource['name'] + str(names[old_resource_name])
+            names[old_resource_name] += 1
         else:
             names[resource['name']] = 0
 
