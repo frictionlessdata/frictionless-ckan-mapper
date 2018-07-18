@@ -79,8 +79,9 @@ def dataset_to_datapackage(dataset_dict):
     names = {}
     for resource in dp.get('resources', []):
         if resource['name'] in names.keys():
-            resource['name'] = resource['name'] + str(names[resource['name']])
-            names[resource['name']] += 1
+            old_resource_name = resource['name']
+            resource['name'] = resource['name'] + str(names[old_resource_name])
+            names[old_resource_name] += 1
         else:
             names[resource['name']] = 0
 
@@ -131,7 +132,7 @@ def _datapackage_resource_to_ckan_resource(resource):
     elif resource.inline:
         resource_dict['data'] = resource.source
     else:
-        raise NotImplemented('Multipart resources not yet supported')
+        raise NotImplementedError('Multipart resources not yet supported')
 
     if resource.descriptor.get('description'):
         resource_dict['description'] = resource.descriptor['description']
