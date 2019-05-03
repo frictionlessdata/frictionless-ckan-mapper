@@ -22,7 +22,7 @@ env:
 
 install:
   - make install
-  - pip install coveralls 'datapackage>=1.0,<2.0'
+  - pip install coveralls
 
 script:
   - make test
