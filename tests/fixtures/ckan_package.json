@@ -1,0 +1,81 @@
+{
+  "id": "99575b35-8a88-4fd9-b0dc-b9d0479c9b2c",
+  "name": "ckan-to-frictionless-conversion",
+  "title": "Title with Spaces",
+  "url": "https://unicode.org/Public/emoji/latest/emoji-test.txt",
+  "resources": [
+    {
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2020-06-14T16:46:36.105271",
+      "datastore_active": false,
+      "description": "csv",
+      "format": "CSV",
+      "hash": "",
+      "id": "a6d54af7-3119-4691-917b-8655784c5438",
+      "last_modified": null,
+      "mimetype_inner": null,
+      "mimetype": null,
+      "name": "Emojis csv",
+      "package_id": "99575b35-8a88-4fd9-b0dc-b9d0479c9b2c",
+      "position": 0,
+      "resource_type": null,
+      "revision_id": "72208aa7-6554-4538-80b1-60c8cad05d9c",
+      "size": null,
+      "state": "active",
+      "url_type": null,
+      "url": "https://datahub.io/core/unicode-emojis/r/emojis.csv"
+    },
+    {
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2020-06-14T16:47:13.972133",
+      "datastore_active": false,
+      "description": "Sequences",
+      "format": "TXT",
+      "hash": "",
+      "id": "ad968429-651f-4aa2-add8-e45c155eef6e",
+      "last_modified": null,
+      "mimetype_inner": null,
+      "mimetype": null,
+      "name": "emoji-sequences.txt",
+      "package_id": "99575b35-8a88-4fd9-b0dc-b9d0479c9b2c",
+      "position": 1,
+      "resource_type": null,
+      "revision_id": "faaea9d4-3e7f-40ee-82fd-7d28d9034ffa",
+      "size": 123123,
+      "state": "active",
+      "url_type": null,
+      "url": "https://unicode.org/Public/emoji/13.0/emoji-sequences.txt"
+    }
+  ],
+  "tags": [
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "tag1",
+      "id": "6c943152-f6a4-4f84-8451-04740fb32dd9",
+      "name": "tag1"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "tag2",
+      "id": "a9114a47-9deb-42ce-be80-2b8000397cbd",
+      "name": "tag2"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "tag3",
+      "id": "19760b34-eaa8-472d-bffd-864a54e69abb",
+      "name": "tag3"
+    }
+  ],
+  "extras": [
+    { "key": "boolvalue", "value": "false" },
+    { "key": "custom2", "value": "12312386" },
+    { "key": "customkey1", "value": "value1" },
+    { "key": "nullvalue", "value": "null" }
+  ]
+}

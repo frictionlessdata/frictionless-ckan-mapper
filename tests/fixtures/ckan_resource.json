@@ -1,0 +1,28 @@
+{
+  "mimetype": null,
+  "cache_url": null,
+  "hash": "",
+  "description": "csv",
+  "extras": {
+    "key1": 123,
+    "key2": false,
+    "key3": null,
+    "key4": "value4"
+  },
+  "name": "Emojis csv",
+  "format": "CSV",
+  "url": "https://datahub.io/core/unicode-emojis/r/emojis.csv",
+  "datastore_active": false,
+  "cache_last_updated": null,
+  "package_id": "99575b35-8a88-4fd9-b0dc-b9d0479c9b2c",
+  "created": "2020-06-14T16:46:36.105271",
+  "state": "active",
+  "mimetype_inner": null,
+  "last_modified": null,
+  "position": 0,
+  "revision_id": "72208aa7-6554-4538-80b1-60c8cad05d9c",
+  "url_type": null,
+  "id": "a6d54af7-3119-4691-917b-8655784c5438",
+  "resource_type": null,
+  "size": null
+}
