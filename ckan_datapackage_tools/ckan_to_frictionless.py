@@ -11,29 +11,35 @@ class CKANToFrictionless:
         'url': 'homepage'
     }
 
-    def resource(self, ckandict):
-        outdict = dict(ckandict)
+    def _convert_resource_format(self, resource: dict) -> dict:
+        '''Remove unneeded keys, cast to expected type and reformat
+        keys by removing capitalization and converting symbols.'''
+        # Remove keys not needed
+        del resource['package_id']
+        del resource['position']
+
+        # Reformat expected output for some keys in resource
+        resource['format'] = resource['format'].lower()
+        resource['name'] = resource['name'].lower().replace(' ', '-')
+
+        # Remap differences from CKAN to Frictionless resource
         for k, v in self.resource_mapping.items():
-            if k in outdict:
-                outdict[v] = outdict[k]
-                del outdict[k]
+            if k in resource:
+                resource[v] = resource[k]
+                del resource[k]
 
                 # Cast CKAN resource size to int
                 if k == 'size':
-                    if not outdict[v]:  # receives `null`
-                        outdict[v] = 0
+                    if not resource[v]:  # receives `null`
+                        resource[v] = 0
                     else:
-                        outdict[v] = int(outdict[v])
+                        resource[v] = int(resource[v])
+        return resource
 
-        # Reformat expected output for some keys in resource
-        outdict['format'] = outdict['format'].lower()
+    def resource(self, ckandict: dict) -> dict:
+        return self._convert_resource_format(ckandict)
 
-        # Remove keys not needed
-        del outdict['package_id']
-        del outdict['position']
-        return outdict
-
-    def package(self, ckandict):
+    def package(self, ckandict: dict) -> dict:
         outdict = dict(ckandict)
 
         # Remap keys `url` and `tags` to Frictionless
@@ -54,25 +60,6 @@ class CKANToFrictionless:
 
         # Reformat resources inside package
         for res in outdict['resources']:
-            # Remove keys not needed
-            del res['package_id']
-            del res['position']
-
-            # Reformat expected output for some keys in resource
-            res['format'] = res['format'].lower()
-            res['name'] = res['name'].lower().replace(' ', '-')
-
-            # Remap differences from CKAN to Frictionless resource
-            for k, v in self.resource_mapping.items():
-                if k in res:
-                    res[v] = res[k]
-                    del res[k]
-
-                    # Cast CKAN resource size to int
-                    if k == 'size':
-                        if not res[v]:  # receives `null`
-                            res[v] = 0
-                        else:
-                            res[v] = int(res[v])
+            res = self._convert_resource_format(res)
 
         return outdict
