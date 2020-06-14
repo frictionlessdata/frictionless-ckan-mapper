@@ -17,6 +17,20 @@ class CKANToFrictionless:
             if k in outdict:
                 outdict[v] = outdict[k]
                 del outdict[k]
+
+                # Cast CKAN resource size to int
+                if k == 'size':
+                    if not outdict[v]:  # receives `null`
+                        outdict[v] = 0
+                    else:
+                        outdict[v] = int(outdict[v])
+
+        # Reformat expected output for some keys in resource
+        outdict['format'] = outdict['format'].lower()
+
+        # Remove keys not needed
+        del outdict['package_id']
+        del outdict['position']
         return outdict
 
     def package(self, ckandict):
