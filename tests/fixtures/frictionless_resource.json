@@ -1,0 +1,10 @@
+{
+  "path": "https://example.com/file.csv",
+  "format": "csv",
+  "description": "Example",
+  "hash": "123abc",
+  "name": "example",
+  "title": "asd",
+  "mediatype": "text/csv",
+  "bytes": 186263228
+}
