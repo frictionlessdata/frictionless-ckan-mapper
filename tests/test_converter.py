@@ -4,7 +4,7 @@ import unittest
 import json
 
 import datapackage
-import ckan_datapackage_tools.converter as converter
+import frictionless_ckan_mapper.converter as converter
 
 import requests_mock
 import six

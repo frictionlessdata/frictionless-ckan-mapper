@@ -1,6 +1,6 @@
 import json
 
-import ckan_datapackage_tools.ckan_to_frictionless as ckan_to_frictionless
+import frictionless_ckan_mapper.ckan_to_frictionless as ckan_to_frictionless
 
 
 def test_resource():

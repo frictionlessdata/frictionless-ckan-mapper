@@ -15,7 +15,7 @@ def read(*paths):
 
 
 # Prepare
-PACKAGE = 'ckan_datapackage_tools'
+PACKAGE = 'frictionless_ckan_mapper'
 NAME = PACKAGE.replace('_', '-')
 INSTALL_REQUIRES = [
     'six>=1.9,<2.0',
@@ -44,7 +44,7 @@ setup(
     long_description=README,
     description='{{ DESCRIPTION }}',
     author='Open Knowledge International',
-    url='https://github.com/frictionlessdata/ckan_datapackage_tools',
+    url='https://github.com/frictionlessdata/frictionless_ckan_mapper',
     license='MIT',
     keywords=[
         'data',
