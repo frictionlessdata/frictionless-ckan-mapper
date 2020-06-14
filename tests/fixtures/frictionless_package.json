@@ -1,0 +1,55 @@
+{
+  "id": "99575b35-8a88-4fd9-b0dc-b9d0479c9b2c",
+  "name": "ckan_to_frictionless_conversion",
+  "title": "Title-with-Spaces",
+  "homepage": "https://unicode.org/Public/emoji/latest/emoji-test.txt",
+  "resources": [
+    {
+      "bytes": 0,
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2020-06-14T16:46:36.105271",
+      "datastore_active": false,
+      "description": "csv",
+      "format": "csv",
+      "hash": "",
+      "id": "a6d54af7-3119-4691-917b-8655784c5438",
+      "last_modified": null,
+      "mediatype": null,
+      "mimetype_inner": null,
+      "name": "emojis-csv",
+      "path": "https://datahub.io/core/unicode-emojis/r/emojis.csv",
+      "resource_type": null,
+      "revision_id": "72208aa7-6554-4538-80b1-60c8cad05d9c",
+      "state": "active",
+      "url_type": null
+    },
+    {
+      "bytes": 123123,
+      "cache_last_updated": null,
+      "cache_url": null,
+      "created": "2020-06-14T16:47:13.972133",
+      "datastore_active": false,
+      "description": "Sequences",
+      "format": "txt",
+      "hash": "",
+      "id": "ad968429-651f-4aa2-add8-e45c155eef6e",
+      "last_modified": null,
+      "mediatype": null,
+      "mimetype_inner": null,
+      "name": "emoji-sequences.txt",
+      "path": "https://unicode.org/Public/emoji/13.0/emoji-sequences.txt",
+      "resource_type": null,
+      "revision_id": "faaea9d4-3e7f-40ee-82fd-7d28d9034ffa",
+      "state": "active",
+      "url_type": null
+    }
+  ],
+  "keywords": ["tag1", "tag2", "tag3"],
+  "extras": [
+    { "key": "boolvalue", "value": "false" },
+    { "key": "custom2", "value": "12312386" },
+    { "key": "customkey1", "value": "value1" },
+    { "key": "nullvalue", "value": "null" }
+  ]
+}

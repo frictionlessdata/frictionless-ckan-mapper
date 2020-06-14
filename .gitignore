@@ -91,3 +91,6 @@ ENV/
 # Extra
 .idea/
 *iml
+
+# VS Code
+.vscode/
