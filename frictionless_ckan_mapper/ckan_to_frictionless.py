@@ -11,7 +11,7 @@ class CKANToFrictionless:
         'url': 'homepage'
     }
 
-    def _convert_resource_format(self, resource: dict) -> dict:
+    def _convert_resource_format(self, resource):
         '''Remove unneeded keys, cast to expected type and reformat
         keys by removing capitalization and converting symbols.'''
         # Remove keys not needed
@@ -36,10 +36,10 @@ class CKANToFrictionless:
                         resource[v] = int(resource[v])
         return resource
 
-    def resource(self, ckandict: dict) -> dict:
+    def resource(self, ckandict):
         return self._convert_resource_format(ckandict)
 
-    def package(self, ckandict: dict) -> dict:
+    def package(self, ckandict):
         outdict = dict(ckandict)
 
         # Remap keys `url` and `tags` to Frictionless
