@@ -21,3 +21,19 @@ def test_package():
     exp = json.load(open(exppath))
     out = converter.package(indict)
     assert out == exp
+
+# my instinct is that more discrete tests, testing a specific part of
+# conversion are better b/c that way we can see what is tested (o/w we probably
+# need comments in json which is hard to do - without some hacking (e.g.
+# stripping // lines before json parsing).
+
+# TODO: copy over from test_converter all tests ...
+
+# TODO parametrize ...
+
+class TestPackageConversion:
+    def test_delete_keys(self):
+        pass
+    
+    def test_author_and_maintainer(self):
+        pass
