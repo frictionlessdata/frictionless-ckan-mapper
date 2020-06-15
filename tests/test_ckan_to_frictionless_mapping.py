@@ -31,9 +31,40 @@ def test_package():
 
 # TODO parametrize ...
 
-class TestPackageConversion:
+class TestResourceConversion:
+    def test_delete_keys(self):
+        pass
+
+class TestPackageConversion(object):
+    @classmethod
+    def setup_class(self):
+        self.converter = ckan_to_frictionless.CKANToFrictionless()
+
+    def test_fixtures(self):
+        '''Test a lot of stuff via fixtures'''
+        inpath = 'tests/fixtures/ckan_package.json'
+        exppath = 'tests/fixtures/frictionless_package.json'
+        indict = json.load(open(inpath))
+        exp = json.load(open(exppath))
+        out = self.converter.package(indict)
+        assert out == exp
+
     def test_delete_keys(self):
         pass
     
     def test_author_and_maintainer(self):
         pass
+
+    def _test_dataset_license(self):
+        license = {
+            'type': 'cc-zero',
+            'title': 'Creative Commons CC Zero License (cc-zero)',
+            'url': 'http://opendefinition.org/licenses/cc-zero/'
+        }
+        indict = {
+            'license_id': license['type'],
+            'license_title': license['title'],
+            'license_url': license['url'],
+        }
+        out = self.converter.package(indict)
+        assert out['license'] == license

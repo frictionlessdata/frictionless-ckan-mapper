@@ -8,11 +8,6 @@ class CKANToFrictionless:
 
     resource_keys_to_remove = [ 'package_id', 'position' ]
 
-    package_mapping = {
-        'tags': 'keywords',  # this is flattened and simplified
-        'url': 'homepage'
-    }
-
     def resource(self, ckandict):
         '''Convert a CKAN resource to Frictionless Resource.
         
@@ -47,6 +42,10 @@ class CKANToFrictionless:
                         resource[v] = int(resource[v])
         return resource
 
+    package_mapping = {
+        'tags': 'keywords',  # this is flattened and simplified
+        'url': 'homepage'
+    }
 
     def package(self, ckandict):
         '''Convert a CKAN Package (Dataset) to Frictionless Package.
@@ -78,7 +77,6 @@ class CKANToFrictionless:
         outdict['name'] = outdict['name'].replace('-', '_')
 
         # Reformat resources inside package
-        outdict['resources'] = [ self.resource(res) for res in
-                outdict['resources'] ]
+        outdict['resources'] = [ self.resource(res) for res in outdict['resources'] ]
 
         return outdict
