@@ -1,0 +1,7 @@
+[
+  {
+    "test_input": { "fields": [{ "name": "abc", "type": "string" }] },
+    "exp": { "schema": { "fields": [{ "name": "abc", "type": "string" }] } },
+    "test_id": "1"
+  }
+]

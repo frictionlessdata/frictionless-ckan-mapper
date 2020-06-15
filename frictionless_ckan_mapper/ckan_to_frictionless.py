@@ -1,3 +1,8 @@
+import json
+
+import slugify
+
+
 class CKANToFrictionless:
 
     resource_mapping = {
@@ -6,13 +11,18 @@ class CKANToFrictionless:
         'url': 'path'
     }
 
-    resource_keys_to_remove = [ 'package_id', 'position' ]
+    # TODO: Do we want to keep everything except `package_id` and
+    # `position`? The current test
+    # `test_resource_path_is_set_even_for_uploaded_resources`
+    # is not expecting `url_type` in its output.
+    resource_keys_to_remove = ['package_id', 'position', 'url_type']
 
-    def resource(self, ckandict):
+    def ckan_resource_to_fd_resource(self, ckandict):
         '''Convert a CKAN resource to Frictionless Resource.
-        
+
         1. Remove unneeded keys
         2. Expand extras.
+            * Extras are already expanded to key / values by CKAN (unlike on package)
             * ~~Apply heuristic to unjsonify (if starts with [ or { unjsonify~~
             * JSON loads everything and on error have a string
         3. Map keys from CKAN to Frictionless (and reformat if needed)
@@ -24,9 +34,20 @@ class CKANToFrictionless:
             if k in resource:
                 del resource[k]
 
+        if 'extras' in resource:
+            resource['extras'] = json.loads(resource['extras'])
+
+        if 'schema' in resource:
+            try:
+                resource['schema'] = json.loads(resource['schema'])
+            except (json.decoder.JSONDecodeError, TypeError):
+                pass
+
         # Reformat expected output for some keys in resource
-        resource['format'] = resource['format'].lower()
-        resource['name'] = resource['name'].lower().replace(' ', '-')
+        # resource['format'] = resource['format'].lower()
+        if 'name' in resource:
+            resource['title'] = resource['name']
+            resource['name'] = slugify.slugify(resource['name']).lower()
 
         # Remap differences from CKAN to Frictionless resource
         for k, v in self.resource_mapping.items():
@@ -43,11 +64,17 @@ class CKANToFrictionless:
         return resource
 
     package_mapping = {
+        'notes': 'description',
         'tags': 'keywords',  # this is flattened and simplified
-        'url': 'homepage'
     }
 
-    def package(self, ckandict):
+    package_sources_mapping = {
+        'author': 'title',
+        'author_email': 'email',
+        'url': 'path',
+    }
+
+    def dataset_to_datapackage(self, ckandict):
         '''Convert a CKAN Package (Dataset) to Frictionless Package.
 
         1. Remove unneeded keys
@@ -60,23 +87,48 @@ class CKANToFrictionless:
         '''
         outdict = dict(ckandict)
 
-        # Remap keys `url` and `tags` to Frictionless
-        # format `path` and `keywords`
+        # Remap necessary package keys
         for k, v in self.package_mapping.items():
             if k in ckandict and k == 'url':
                 outdict[v] = ckandict[k]
                 del outdict[k]
-            if k in ckandict and k == 'tags':
+            elif k in ckandict and k == 'tags':
                 outdict[v] = []
                 for tag in ckandict[k]:
                     outdict[v].append(tag['name'])
                 del outdict[k]
+            elif k in ckandict:
+                outdict[v] = ckandict[k]
+                del outdict[k]
+
+        # Convert the structure of extras
+        if outdict.get('extras'):
+            extras = outdict['extras']  # this is a list
+            outdict['extras'] = {}  # we convert to dict
+            for extra in extras:
+                key = extra['key']
+                value = extra['value']
+                try:
+                    value = json.loads(value)
+                except (json.decoder.JSONDecodeError, TypeError):
+                    pass
+                result = {key: value}
+                outdict['extras'].update(result)
+
+        # Remap properties in sources
+        outdict['sources'] = []
+        source = {}
+        for k, v in self.package_sources_mapping.items():
+            if k in outdict:
+                source[v] = outdict[k]
+                del outdict[k]
+        outdict['sources'].append(source)
 
         # Reformat expected output for some keys in package
-        outdict['title'] = outdict['title'].replace(' ', '-')
         outdict['name'] = outdict['name'].replace('-', '_')
 
         # Reformat resources inside package
-        outdict['resources'] = [ self.resource(res) for res in outdict['resources'] ]
+        outdict['resources'] = [self.ckan_resource_to_fd_resource(
+            res) for res in outdict['resources']]
 
         return outdict
