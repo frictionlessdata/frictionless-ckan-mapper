@@ -1,3 +1,5 @@
+# !/usr/bin/python
+# coding=utf-8
 '''
 Tests to make sure that package and resource conversions from CKAN to
 Frictionless are... frictionless.

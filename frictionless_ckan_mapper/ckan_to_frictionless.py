@@ -8,6 +8,11 @@ import json
 # Third-party library imports
 import slugify
 
+try:
+    json_parse_exception = json.decoder.JSONDecodeError
+except AttributeError:  # Testing against Python 2
+    json_parse_exception = ValueError
+
 
 class CKANToFrictionless:
     '''Set of methods to convert CKAN packages and resources to their
@@ -78,7 +83,7 @@ class CKANToFrictionless:
                     try:
                         value = json.loads(value)
                         resource[key] = value
-                    except (json.decoder.JSONDecodeError, TypeError):
+                    except (json_parse_exception, TypeError):
                         pass
 
         # Reformat expected output for some keys in resource
@@ -121,7 +126,7 @@ class CKANToFrictionless:
                 value = extra['value']
                 try:
                     value = json.loads(value)
-                except (json.decoder.JSONDecodeError, TypeError):
+                except (json_parse_exception, TypeError):
                     pass
                 result = {key: value}
                 outdict['extras'].update(result)
