@@ -124,34 +124,32 @@ class TestResourceConversion:
 
     def test_resource_name_slugifies_the_name_and_adds_title(self):
         indict = {
-            'name': 'ThE-nAmE',
+            'name': 'ThE-nAmE'
         }
         exp = {
-            'name': 'the-name',
-            'title': 'ThE-nAmE'
+            'name': 'the-name'
         }
         out = converter.ckan_resource_to_fd_resource(indict)
         assert out == exp
 
         indict = {
-            'name': 'Lista de PIBs dos países!   51',
+            'name': 'Lista de PIBs dos países!   51'
         }
         exp = {
-            'name': 'lista-de-pibs-dos-paises-51',
-            'title': 'Lista de PIBs dos países!   51'
+            'name': 'lista-de-pibs-dos-paises-51'
         }
         out = converter.ckan_resource_to_fd_resource(indict)
         assert out == exp
 
     def test_resource_name_converts_unicode_characters(self):
-        self.resource_dict.update({
-            'name': u'万事开头难',
-        })
-        expected_name = 'mo-shi-kai-tou-nan'
-        result = converter.dataset_to_datapackage(self.dataset_dict)
-        resource = result.get('resources')[0]
-        assert resource.get('name') == expected_name
-        assert resource.get('title') == self.resource_dict['name']
+        indict = {
+            'name': u'万事开头难'
+        }
+        exp = {
+            'name': 'mo-shi-kai-tou-nan'
+        }
+        out = converter.ckan_resource_to_fd_resource(indict)
+        assert out == exp
 
 
 class TestPackageConversion:

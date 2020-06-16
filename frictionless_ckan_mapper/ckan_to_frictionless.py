@@ -58,7 +58,6 @@ class CKANToFrictionless:
         # Reformat expected output for some keys in resource
         # resource['format'] = resource['format'].lower()
         if 'name' in resource:
-            resource['title'] = resource['name']
             resource['name'] = slugify.slugify(resource['name']).lower()
 
         # Remap differences from CKAN to Frictionless resource
