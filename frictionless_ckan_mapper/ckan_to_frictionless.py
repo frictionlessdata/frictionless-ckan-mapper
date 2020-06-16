@@ -128,19 +128,30 @@ class CKANToFrictionless:
                 outdict['extras'].update(result)
 
         # Remap properties in sources
-        outdict['sources'] = []
-        source = {}
-        for k, v in self.package_sources_mapping.items():
-            if k in outdict:
-                source[v] = outdict[k]
-                del outdict[k]
-        outdict['sources'].append(source)
+        if 'author' in outdict:
+            outdict['sources'] = []
+            source = {}
+            for k, v in self.package_sources_mapping.items():
+                if k in outdict:
+                    source[v] = outdict[k]
+                    del outdict[k]
+            outdict['sources'].append(source)
 
         # Reformat expected output for some keys in package
-        outdict['name'] = outdict['name'].replace('-', '_')
+        if 'name' in outdict:
+            outdict['name'] = outdict['name'].replace('-', '_')
 
         # Reformat resources inside package
-        outdict['resources'] = [self.resource(res) for res in
-                outdict['resources']]
+        if 'resources' in outdict:
+            outdict['resources'] = [self.resource(res) for res in
+                    outdict['resources']]
+
+        # TODO: do we always license_id - can we have license_title w/o
+        # license_id?
+        if 'license_id' in outdict:
+            outdict['licenses'] = [{
+                'type': outdict['license_id'],
+                }]
+            del outdict['license_id']
 
         return outdict

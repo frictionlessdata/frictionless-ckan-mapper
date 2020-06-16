@@ -112,7 +112,8 @@ class TestResourceConversion:
         out = converter.resource(indict)
         assert out == exp
 
-    def test_resource_name_slugifies_the_name_and_adds_title(self):
+    # TODO: remove sluggification (if needed make it part of strict mode)
+    def test_resource_name_slugifies_the_name(self):
         indict = {
             'name': 'ThE-nAmE'
         }
@@ -177,38 +178,20 @@ class TestPackageConversion:
     def test_author_and_maintainer(self):
         pass
 
-    def _test_dataset_license(self):
-        license = {
-            'type': 'cc-zero',
-            'title': 'Creative Commons CC Zero License (cc-zero)',
-            'url': 'http://opendefinition.org/licenses/cc-zero/'
-        }
+    def test_dataset_license(self):
         indict = {
-            'license_id': license['type'],
-            'license_title': license['title'],
-            'license_url': license['url'],
+            'license_id': 'odc-odbl',
+            # TODO: check package_show in CKAN
+            # 'license_title': 'Open Data Commons Open Database License',
+            # 'license_url': 'http://opendefinition.org/licenses/odc-odbl/'
         }
-        out = self.converter.dataset(indict)
-        assert out['license'] == license
-
-    def test_basic_dataset_in_setup_is_valid(self):
-        converter.dataset(self.dataset_dict)
-
-    def test_dataset_only_requires_a_name_to_be_valid(self):
-        invalid_dataset_dict = {}
-        valid_dataset_dict = {
-            'name': 'gdp',
-            'resources': [
-                {
-                    'name': 'the-resource',
-                }
-            ]
-
+        exp = {
+            "licenses": [{
+                'type': 'odc-odbl',
+            }]
         }
-
-        converter.dataset(valid_dataset_dict)
-        with pytest.raises(KeyError):
-            converter.dataset(invalid_dataset_dict)
+        out = converter.dataset(indict)
+        assert out == exp
 
     def test_dataset_name_title_and_version(self):
         self.dataset_dict.update({
