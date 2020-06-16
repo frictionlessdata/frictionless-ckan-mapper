@@ -1,18 +1,11 @@
 import json
 
-import frictionless_ckan_mapper.ckan_to_frictionless as ckan_to_frictionless
-
 import pytest
 
-# my instinct is that more discrete tests, testing a specific part of
-# conversion are better b/c that way we can see what is tested (o/w we probably
-# need comments in json which is hard to do - without some hacking (e.g.
-# stripping // lines before json parsing).
+import frictionless_ckan_mapper.ckan_to_frictionless as ckan_to_frictionless
 
-# TODO: copy over from test_converter all tests ...
 
 converter = ckan_to_frictionless.CKANToFrictionless()
-
 
 class TestResourceConversion:
     '''Notes:
@@ -110,87 +103,45 @@ class TestResourceConversion:
         out = converter.ckan_resource_to_fd_resource(indict)
         assert out == exp
 
-    # TODO: remove we don't need to test pass through other than all in one ...
-    # (and poss with random values)
-    def test_resource_description(self):
-        self.resource_dict.update({
+    def test_resource_keys_pass_through(self):
+        indict = {
             'description': 'GDPs list',
-        })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
-        resource = result.get('resources')[0]
-        assert resource.get('description') == self.resource_dict['description']
-
-    # TODO
-    def test_resource_format(self):
-        self.resource_dict.update({
             'format': 'CSV',
-        })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
-        resource = result.get('resources')[0]
-        assert resource.get('format') == self.resource_dict['format']
-
-    def test_resource_hash(self):
-        self.resource_dict.update({
             'hash': 'e785c0883d7a104330e69aee73d4f235',
-        })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
-        resource = result.get('resources')[0]
-        assert resource.get('hash') == self.resource_dict['hash']
-
-    def test_resource_schema(self):
-        self.resource_dict.update({
             'schema': {
                 'fields': [
                     {'name': 'id', 'type': 'integer'},
                     {'name': 'title', 'type': 'string'},
                 ]
-            }
-        })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
-        resource = result.get('resources')[0]
-        assert resource.get('schema') == self.resource_dict['schema']
-
-    def test_resource_schema_string(self):
-        schema = {
-            'fields': [
-                {'name': 'id', 'type': 'integer'},
-                {'name': 'title', 'type': 'string'},
-            ]
+            },
+            # random 
+            'adfajka': 'aaaa',
+            '1dafak': 'abbbb'
         }
-        self.resource_dict.update({
-            'schema': json.dumps(schema)
-        })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
-        resource = result.get('resources')[0]
-        assert resource.get('schema') == schema
+        exp = indict
+        out = converter.ckan_resource_to_fd_resource(indict)
+        assert out == exp
 
-    def test_resource_schema_url(self):
-        self.resource_dict.update({
-            'schema': 'http://example.com/some.schema.json'
-        })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
-        resource = result.get('resources')[0]
-        assert resource.get('schema') == self.resource_dict['schema']
-
-    def test_resource_name_lowercases_the_name(self):
-        self.resource_dict.update({
+    def test_resource_name_slugifies_the_name_and_adds_title(self):
+        indict = {
             'name': 'ThE-nAmE',
-        })
-        expected_name = 'the-name'
-        result = converter.dataset_to_datapackage(self.dataset_dict)
-        resource = result.get('resources')[0]
-        assert resource.get('name') == expected_name
-        assert resource.get('title') == self.resource_dict['name']
+        }
+        exp = {
+            'name': 'the-name',
+            'title': 'ThE-nAmE'
+        }
+        out = converter.ckan_resource_to_fd_resource(indict)
+        assert out == exp
 
-    def test_resource_name_slugifies_the_name(self):
-        self.resource_dict.update({
+        indict = {
             'name': 'Lista de PIBs dos países!   51',
-        })
-        expected_name = 'lista-de-pibs-dos-paises-51'
-        result = converter.dataset_to_datapackage(self.dataset_dict)
-        resource = result.get('resources')[0]
-        assert resource.get('name') == expected_name
-        assert resource.get('title') == self.resource_dict['name']
+        }
+        exp = {
+            'name': 'lista-de-pibs-dos-paises-51',
+            'title': 'Lista de PIBs dos países!   51'
+        }
+        out = converter.ckan_resource_to_fd_resource(indict)
+        assert out == exp
 
     def test_resource_name_converts_unicode_characters(self):
         self.resource_dict.update({
