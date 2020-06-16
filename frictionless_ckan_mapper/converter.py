@@ -52,7 +52,7 @@ def dataset_to_datapackage(dataset_dict):
     :rtype: dict
 
     '''
-    PARSERS = [
+    parsers = [
         _rename_dict_key('title', 'title'),
         _rename_dict_key('version', 'version'),
         _parse_ckan_url,
@@ -63,21 +63,21 @@ def dataset_to_datapackage(dataset_dict):
         _parse_tags,
         _parse_extras,
     ]
-    dp = {
+    datapackage = {
         'name': dataset_dict['name']
     }
 
-    for parser in PARSERS:
-        dp.update(parser(dataset_dict))
+    for parser in parsers:
+        datapackage.update(parser(dataset_dict))
 
     resources = dataset_dict.get('resources')
     if resources:
-        dp['resources'] = [_convert_to_datapackage_resource(r)
-                           for r in resources]
+        datapackage['resources'] = [_convert_to_datapackage_resource(r)
+                                    for r in resources]
 
     # Ensure unique resource names
     names = {}
-    for resource in dp.get('resources', []):
+    for resource in datapackage.get('resources', []):
         if resource['name'] in names.keys():
             old_resource_name = resource['name']
             resource['name'] = resource['name'] + str(names[old_resource_name])
@@ -85,7 +85,7 @@ def dataset_to_datapackage(dataset_dict):
         else:
             names[resource['name']] = 0
 
-    return dp
+    return datapackage
 
 
 def datapackage_to_dataset(datapackage):
@@ -94,7 +94,7 @@ def datapackage_to_dataset(datapackage):
     :returns: the dataset dict
     :rtype: dict
     '''
-    PARSERS = [
+    parsers = [
         _rename_dict_key('title', 'title'),
         _rename_dict_key('version', 'version'),
         _rename_dict_key('description', 'notes'),
@@ -108,7 +108,7 @@ def datapackage_to_dataset(datapackage):
         'name': datapackage.descriptor['name'].lower()
     }
 
-    for parser in PARSERS:
+    for parser in parsers:
         dataset_dict.update(parser(datapackage.descriptor))
 
     if datapackage.resources:
@@ -180,17 +180,17 @@ def _parse_notes(dataset_dict):
 
 def _parse_license(dataset_dict):
     result = {}
-    license = {}
+    dataset_license = {}
 
     if dataset_dict.get('license_id'):
-        license['type'] = dataset_dict['license_id']
+        dataset_license['type'] = dataset_dict['license_id']
     if dataset_dict.get('license_title'):
-        license['title'] = dataset_dict['license_title']
+        dataset_license['title'] = dataset_dict['license_title']
     if dataset_dict.get('license_url'):
-        license['url'] = dataset_dict['license_url']
+        dataset_license['url'] = dataset_dict['license_url']
 
-    if license:
-        result['license'] = license
+    if dataset_license:
+        result['license'] = dataset_license
 
     return result
 
@@ -259,17 +259,17 @@ def _parse_extras(dataset_dict):
 def _datapackage_parse_license(datapackage_dict):
     result = {}
 
-    license = datapackage_dict.get('license')
-    if license:
-        if isinstance(license, dict):
-            if license.get('type'):
-                result['license_id'] = license['type']
-            if license.get('title'):
-                result['license_title'] = license['title']
-            if license.get('title'):
-                result['license_url'] = license['url']
-        elif isinstance(license, six.string_types):
-            result['license_id'] = license
+    dataset_license = datapackage_dict.get('license')
+    if dataset_license:
+        if isinstance(dataset_license, dict):
+            if dataset_license.get('type'):
+                result['license_id'] = dataset_license['type']
+            if dataset_license.get('title'):
+                result['license_title'] = dataset_license['title']
+            if dataset_license.get('title'):
+                result['license_url'] = dataset_license['url']
+        elif isinstance(dataset_license, six.string_types):
+            result['license_id'] = dataset_license
 
     return result
 
@@ -334,7 +334,7 @@ def _datapackage_parse_unknown_fields_as_extras(datapackage_dict):
     # parsers pattern to remove whatever they use from the `datapackage_dict`
     # and call this parser at last. Anything that's still in `datapackage_dict`
     # would then be added to extras.
-    KNOWN_FIELDS = [
+    known_fields = [
         'name',
         'resources',
         'license',
@@ -350,12 +350,12 @@ def _datapackage_parse_unknown_fields_as_extras(datapackage_dict):
     result = {}
     extras = [{'key': k, 'value': v}
               for k, v in datapackage_dict.items()
-              if k not in KNOWN_FIELDS]
+              if k not in known_fields]
 
     if extras:
         for extra in extras:
             value = extra['value']
-            if isinstance(value, dict) or isinstance(value, list):
+            if isinstance(value, (dict, list)):
                 extra['value'] = json.dumps(value)
         result['extras'] = extras
 

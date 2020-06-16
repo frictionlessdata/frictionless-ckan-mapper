@@ -1,3 +1,7 @@
+'''
+Tests to make sure that package and resource conversions from CKAN to
+Frictionless are... frictionless.
+'''
 import json
 
 import pytest
@@ -5,13 +9,12 @@ import pytest
 import frictionless_ckan_mapper.ckan_to_frictionless as ckan_to_frictionless
 
 
-converter = ckan_to_frictionless.CKANToFrictionless()
-
 class TestResourceConversion:
     '''Notes:
 
-    * extras do not any special testing since CKAN already just has them as key values. 
-    * we do want to test unjsonifying values since that will cover e.g. a Table Schema set in schema field
+    * extras do not any special testing since CKAN already just has them as
+    * key values. we do want to test unjsonifying values since that will
+    * cover e.g. a Table Schema set in schema field
 
     '''
 
@@ -34,17 +37,16 @@ class TestResourceConversion:
     def _test_fixtures(self):
         inpath = 'tests/fixtures/ckan_resource.json'
         exppath = 'tests/fixtures/frictionless_resource.json'
-        converter = ckan_to_frictionless.CKANToFrictionless()
         indict = json.load(open(inpath))
         exp = json.load(open(exppath))
-        out = converter.resource(indict)
+        out = self.converter.resource(indict)
         assert out == exp
 
     def test_values_are_unjsonified(self):
         '''Test values which are jsonified dict or arrays are unjsonified'''
         schema = {
             "fields": [
-                { "name": "abc", "type": "string" }
+                {"name": "abc", "type": "string"}
             ]
         }
         indict = {
@@ -52,24 +54,24 @@ class TestResourceConversion:
             "otherval": json.dumps(schema),
             "x": "{'abc': 1"
         }
-        exp =  {
+        exp = {
             "schema": schema,
             "otherval": schema,
             # fake json object - not really ... but looks like it ...
             "x": "{'abc': 1"
         }
-        out = converter.resource(indict)
+        out = self.converter.resource(indict)
         assert out == exp
 
         indict = {
             "x": "hello world",
             "y": "1.3"
-            }
+        }
         exp = {
             "x": "hello world",
             "y": "1.3"
-            }
-        out = converter.resource(indict)
+        }
+        out = self.converter.resource(indict)
         assert out == exp
 
     def test_keys_are_removed_that_should_be(self):
@@ -79,17 +81,17 @@ class TestResourceConversion:
             "url_type": "file"
         }
         exp = {}
-        out = converter.resource(indict)
+        out = self.converter.resource(indict)
         assert out == exp
 
     def test_resource_url(self):
         indict = {
             "url": "http://www.somewhere.com/data.csv"
-            }
-        exp =  {
+        }
+        exp = {
             "path": "http://www.somewhere.com/data.csv"
-            }
-        out = converter.resource(indict)
+        }
+        out = self.converter.resource(indict)
         assert out == exp
 
     def test_resource_path_is_set_even_for_uploaded_resources(self):
@@ -100,7 +102,7 @@ class TestResourceConversion:
         exp = {
             'path': 'http://www.somewhere.com/data.csv'
         }
-        out = converter.resource(indict)
+        out = self.converter.resource(indict)
         assert out == exp
 
     def test_resource_keys_pass_through(self):
@@ -114,12 +116,12 @@ class TestResourceConversion:
                     {'name': 'title', 'type': 'string'},
                 ]
             },
-            # random 
+            # random
             'adfajka': 'aaaa',
             '1dafak': 'abbbb'
         }
         exp = indict
-        out = converter.resource(indict)
+        out = self.converter.resource(indict)
         assert out == exp
 
     def test_resource_name_slugifies_the_name_and_adds_title(self):
@@ -129,7 +131,7 @@ class TestResourceConversion:
         exp = {
             'name': 'the-name'
         }
-        out = converter.resource(indict)
+        out = self.converter.resource(indict)
         assert out == exp
 
         indict = {
@@ -138,7 +140,7 @@ class TestResourceConversion:
         exp = {
             'name': 'lista-de-pibs-dos-paises-51'
         }
-        out = converter.resource(indict)
+        out = self.converter.resource(indict)
         assert out == exp
 
     def test_resource_name_converts_unicode_characters(self):
@@ -148,9 +150,9 @@ class TestResourceConversion:
         exp = {
             'name': 'mo-shi-kai-tou-nan'
         }
-        out = converter.resource(indict)
+        out = self.converter.resource(indict)
         assert out == exp
-    
+
 
 class TestPackageConversion:
     @classmethod
@@ -190,7 +192,7 @@ class TestPackageConversion:
         assert out['license'] == license
 
     def test_basic_dataset_in_setup_is_valid(self):
-        converter.dataset(self.dataset_dict)
+        self.converter.dataset(self.dataset_dict)
 
     def test_dataset_only_requires_a_name_to_be_valid(self):
         invalid_dataset_dict = {}
@@ -204,9 +206,9 @@ class TestPackageConversion:
 
         }
 
-        converter.dataset(valid_dataset_dict)
+        self.converter.dataset(valid_dataset_dict)
         with pytest.raises(KeyError):
-            converter.dataset(invalid_dataset_dict)
+            self.converter.dataset(invalid_dataset_dict)
 
     def test_dataset_name_title_and_version(self):
         self.dataset_dict.update({
@@ -214,7 +216,7 @@ class TestPackageConversion:
             'title': 'Countries GDP',
             'version': '1.0',
         })
-        result = converter.dataset(self.dataset_dict)
+        result = self.converter.dataset(self.dataset_dict)
         assert result['title'] == self.dataset_dict['title']
         assert result['name'] == self.dataset_dict['name']
         assert result['version'] == self.dataset_dict['version']
@@ -223,7 +225,7 @@ class TestPackageConversion:
         self.dataset_dict.update({
             'notes': 'Country, regional and world GDP in current US Dollars.'
         })
-        result = converter.dataset(self.dataset_dict)
+        result = self.converter.dataset(self.dataset_dict)
         assert result.get('description') == self.dataset_dict['notes']
 
     def test_dataset_author_and_source(self):
@@ -239,7 +241,7 @@ class TestPackageConversion:
             'author_email': sources[0]['email'],
             'url': sources[0]['path']
         })
-        result = converter.dataset(self.dataset_dict)
+        result = self.converter.dataset(self.dataset_dict)
         assert result.get('sources') == sources
 
     def test_dataset_tags(self):
@@ -262,7 +264,7 @@ class TestPackageConversion:
                 }
             ]
         })
-        result = converter.dataset(self.dataset_dict)
+        result = self.converter.dataset(self.dataset_dict)
         assert result.get('keywords') == keywords
 
     def test_dataset_extras(self):
@@ -274,7 +276,7 @@ class TestPackageConversion:
                 {'key': 'location', 'value': '{"country": "China"}'},
             ]
         })
-        result = converter.dataset(self.dataset_dict)
+        result = self.converter.dataset(self.dataset_dict)
         assert result.get('extras') == {
             'title_cn': u'國內生產總值',
             'years': [2015, 2016],
@@ -294,7 +296,8 @@ The test expects `license` as a dict, but the specs expect a list of licenses:
     ]
 https://specs.frictionlessdata.io/schemas/data-package.json
 
-test_dataset_maintainer -> There is no "author" in a datapackage according to the specs.
+test_dataset_maintainer -> There is no "author" in a datapackage
+according to the specs.
 Maybe this should map to contributors?
 
 test_dataset_ckan_url -> CKAN should now be using "url",
