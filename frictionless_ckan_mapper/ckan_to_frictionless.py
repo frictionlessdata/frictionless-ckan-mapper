@@ -27,12 +27,13 @@ class CKANToFrictionless:
 
         1. Remove unneeded keys
         2. Expand extras.
-            * Extras are already expanded to key / values by CKAN (unlike on package)
+            * Extras are already expanded to key / values by CKAN (unlike on
+                package)
             * ~~Apply heuristic to unjsonify (if starts with [ or { unjsonify~~
             * JSON loads everything that starts with [ or {
         3. Map keys from CKAN to Frictionless (and reformat if needed)
         4. Remove keys with null values (CKAN has a lot of null valued keys)
-        4. Apply special formatting (if any) for key fields e.g. slugiify
+        5. Apply special formatting (if any) for key fields e.g. slugiify
         '''
         # TODO: delete keys last as may be needed for something in processing
         resource = dict(ckandict)
@@ -46,18 +47,19 @@ class CKANToFrictionless:
             resource['extras'] = json.loads(resource['extras'])
 
         # unjsonify values
-        # 1. check if string
-        # 2. if starts with [ or { => json loads it ...
-            # slightly hacky way to check if value is a jsonified array or dict
-        # 3. else do nothing 
-        for k,v in resource.items():
+        # * check if string
+        # * if starts with [ or { => json.loads it ...
+        # HACK: bit of a hacky way to check if value is a jsonified array or
+        # dict
+        # * else do nothing
+        for k, v in resource.items():
             if isinstance(v, str):
                 v = v.strip()
                 if v.startswith('{') or v.startswith('['):
                     try:
                         v = json.loads(v)
                         resource[k] = v
-                    except (json.decoder.JSONDecodeError, TypeError):
+                    except (json_parse_exception, TypeError):
                         pass
 
         # Remap differences from CKAN to Frictionless resource
@@ -124,7 +126,7 @@ class CKANToFrictionless:
                 value = extra['value']
                 try:
                     value = json.loads(value)
-                except (json.decoder.JSONDecodeError, TypeError):
+                except (json_parse_exception, TypeError):
                     pass
                 result = {key: value}
                 outdict['extras'].update(result)
@@ -142,6 +144,7 @@ class CKANToFrictionless:
         outdict['name'] = outdict['name'].replace('-', '_')
 
         # Reformat resources inside package
-        outdict['resources'] = [self.resource(res) for res in outdict['resources']]
+        outdict['resources'] = [self.resource(res) for res in
+                outdict['resources']]
 
         return outdict

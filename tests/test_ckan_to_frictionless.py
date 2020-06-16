@@ -7,12 +7,14 @@ import frictionless_ckan_mapper.ckan_to_frictionless as ckan_to_frictionless
 
 converter = ckan_to_frictionless.CKANToFrictionless()
 
+
 class TestResourceConversion:
     '''Notes:
 
-    * extras do not any special testing since CKAN already just has them as key values. 
-    * we do want to test unjsonifying values since that will cover e.g. a Table Schema set in schema field
-
+    * extras do not any special testing since CKAN already just has them as key
+      values.
+    * we do want to test unjsonifying values since that will cover e.g. a Table
+      Schema set in schema field
     '''
 
     @classmethod
@@ -52,7 +54,7 @@ class TestResourceConversion:
             "otherval": json.dumps(schema),
             "x": "{'abc': 1"
         }
-        exp =  {
+        exp = {
             "schema": schema,
             "otherval": schema,
             # fake json object - not really ... but looks like it ...
@@ -86,7 +88,7 @@ class TestResourceConversion:
         indict = {
             "url": "http://www.somewhere.com/data.csv"
             }
-        exp =  {
+        exp = {
             "path": "http://www.somewhere.com/data.csv"
             }
         out = converter.resource(indict)
@@ -114,7 +116,7 @@ class TestResourceConversion:
                     {'name': 'title', 'type': 'string'},
                 ]
             },
-            # random 
+            # random
             'adfajka': 'aaaa',
             '1dafak': 'abbbb'
         }
@@ -150,7 +152,7 @@ class TestResourceConversion:
         }
         out = converter.resource(indict)
         assert out == exp
-    
+
     def test_nulls_are_stripped(self):
         indict = {
             'abc': 'xxx',
@@ -306,8 +308,8 @@ The test expects `license` as a dict, but the specs expect a list of licenses:
     ]
 https://specs.frictionlessdata.io/schemas/data-package.json
 
-test_dataset_maintainer -> There is no "author" in a datapackage according to the specs.
-Maybe this should map to contributors?
+test_dataset_maintainer -> There is no "author" in a datapackage according to
+the specs.  Maybe this should map to contributors?
 
 test_dataset_ckan_url -> CKAN should now be using "url",
 not "ckan_url". (?)
