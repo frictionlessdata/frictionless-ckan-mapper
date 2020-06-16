@@ -151,6 +151,18 @@ class TestResourceConversion:
         out = converter.resource(indict)
         assert out == exp
     
+    def test_nulls_are_stripped(self):
+        indict = {
+            'abc': 'xxx',
+            'size': None,
+            'xyz': None
+        }
+        exp = {
+            'abc': 'xxx'
+        }
+        out = converter.resource(indict)
+        assert out == exp
+
 
 class TestPackageConversion:
     @classmethod

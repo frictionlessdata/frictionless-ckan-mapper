@@ -24,10 +24,10 @@ class CKANToFrictionless:
         2. Expand extras.
             * Extras are already expanded to key / values by CKAN (unlike on package)
             * ~~Apply heuristic to unjsonify (if starts with [ or { unjsonify~~
-            * JSON loads everything and on error have a string
+            * JSON loads everything that starts with [ or {
         3. Map keys from CKAN to Frictionless (and reformat if needed)
         4. Remove keys with null values (CKAN has a lot of null valued keys)
-        4. Apply special formatting for key fields
+        4. Apply special formatting (if any) for key fields e.g. slugiify
         '''
         # TODO: delete keys last as may be needed for something in processing
         resource = dict(ckandict)
@@ -55,23 +55,21 @@ class CKANToFrictionless:
                     except (json.decoder.JSONDecodeError, TypeError):
                         pass
 
-        # Reformat expected output for some keys in resource
-        # resource['format'] = resource['format'].lower()
-        if 'name' in resource:
-            resource['name'] = slugify.slugify(resource['name']).lower()
-
         # Remap differences from CKAN to Frictionless resource
         for k, v in self.resource_mapping.items():
             if k in resource:
                 resource[v] = resource[k]
                 del resource[k]
 
-                # Cast CKAN resource size to int
-                if k == 'size':
-                    if not resource[v]:  # receives `null`
-                        resource[v] = 0
-                    else:
-                        resource[v] = int(resource[v])
+        for k in list(resource.keys()):
+            if resource[k] is None:
+                del resource[k]
+
+        # Reformat expected output for some keys in resource
+        # resource['format'] = resource['format'].lower()
+        if 'name' in resource:
+            resource['name'] = slugify.slugify(resource['name']).lower()
+
         return resource
 
     package_mapping = {
