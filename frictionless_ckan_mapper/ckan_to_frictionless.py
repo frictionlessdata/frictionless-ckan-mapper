@@ -2,6 +2,11 @@ import json
 
 import slugify
 
+try:
+    json_parse_exception = json.decoder.JSONDecodeError
+except AttributeError:  # Testing against Python 2
+    json_parse_exception = ValueError
+
 
 class CKANToFrictionless:
 
