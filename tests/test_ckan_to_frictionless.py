@@ -49,47 +49,34 @@ class TestResourceConversion:
             assert out == test_case['exp'], ("Error in test id "
                                              f"#{test_case['test_id']} [see {test_file_name}]")
 
-    @pytest.mark.parametrize(
-        "indict,exp",
-        [
-            (
-                {'package_id': 'abc', 'position': 0},
-                {}
-            )
-        ],
-        ids=['package_id=abc,position=0']
-    )
-    def test_keys_are_removed_that_should_be(self, indict, exp):
+    def test_keys_are_removed_that_should_be(self):
+        indict = {
+            "package_id": "xxx",
+            "position": 2,
+            "url_type": "file"
+        }
+        exp = {}
         out = converter.ckan_resource_to_fd_resource(indict)
         assert out == exp
 
-    @pytest.mark.parametrize(
-        "indict,exp",
-        [(
-            {'url': 'http://www.somewhere.com/data.csv'},
-            {'path': 'http://www.somewhere.com/data.csv'}
-        )
-        ],
-        ids=['url=http://www.somewhere.com/data.csv']
-    )
-    def test_resource_url(self, indict, exp):
+    def test_resource_url(self):
+        indict = {
+            "url": "http://www.somewhere.com/data.csv"
+            }
+        exp =  {
+            "path": "http://www.somewhere.com/data.csv"
+            }
         out = converter.ckan_resource_to_fd_resource(indict)
         assert out == exp
 
-    @pytest.mark.parametrize(
-        "indict,exp",
-        [
-            (
-                {
-                    'url': 'http://www.somewhere.com/data.csv',
-                    'url_type': 'upload'
-                },
-                {'path': 'http://www.somewhere.com/data.csv'}
-            )
-        ],
-        ids=['url=http://www.somewhere.com/data.csv']
-    )
-    def test_resource_path_is_set_even_for_uploaded_resources(self, indict, exp):
+    def test_resource_path_is_set_even_for_uploaded_resources(self):
+        indict = {
+            "url": "http://www.somewhere.com/data.csv",
+            "url_type": "upload"
+        }
+        exp = {
+            'path': 'http://www.somewhere.com/data.csv'
+        }
         out = converter.ckan_resource_to_fd_resource(indict)
         assert out == exp
 
