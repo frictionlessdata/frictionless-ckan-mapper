@@ -29,19 +29,31 @@ class CKANToFrictionless:
         4. Remove keys with null values (CKAN has a lot of null valued keys)
         4. Apply special formatting for key fields
         '''
+        # TODO: delete keys last as may be needed for something in processing
         resource = dict(ckandict)
         for k in self.resource_keys_to_remove:
             if k in resource:
                 del resource[k]
 
+        # TODO: remove as CKAN Resource does not have extras (CKAN has already
+        # # unpacked them)
         if 'extras' in resource:
             resource['extras'] = json.loads(resource['extras'])
 
-        if 'schema' in resource:
-            try:
-                resource['schema'] = json.loads(resource['schema'])
-            except (json.decoder.JSONDecodeError, TypeError):
-                pass
+        # unjsonify values
+        # 1. check if string
+        # 2. if starts with [ or { => json loads it ...
+            # slightly hacky way to check if value is a jsonified array or dict
+        # 3. else do nothing 
+        for k,v in resource.items():
+            if isinstance(v, str):
+                v = v.strip()
+                if v.startswith('{') or v.startswith('['):
+                    try:
+                        v = json.loads(v)
+                        resource[k] = v
+                    except (json.decoder.JSONDecodeError, TypeError):
+                        pass
 
         # Reformat expected output for some keys in resource
         # resource['format'] = resource['format'].lower()

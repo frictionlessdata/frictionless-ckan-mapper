@@ -15,6 +15,12 @@ converter = ckan_to_frictionless.CKANToFrictionless()
 
 
 class TestResourceConversion:
+    '''Notes:
+
+    * extras do not any special testing since CKAN already just has them as key values. 
+    * we do want to test unjsonifying values since that will cover e.g. a Table Schema set in schema field
+
+    '''
 
     @classmethod
     def setup_class(self):
@@ -41,13 +47,37 @@ class TestResourceConversion:
         out = converter.ckan_resource_to_fd_resource(indict)
         assert out == exp
 
-    def _test_extras_and_all_values_are_unjsonified(self, schema_json_test_cases):
-        test_cases, test_file_name = schema_json_test_cases[0], schema_json_test_cases[1]
-        for test_case in test_cases:
-            indict = {'schema': json.dumps(test_case['test_input'])}
-            out = converter.ckan_resource_to_fd_resource(indict)
-            assert out == test_case['exp'], ("Error in test id "
-                                             f"#{test_case['test_id']} [see {test_file_name}]")
+    def test_values_are_unjsonified(self):
+        '''Test values which are jsonified dict or arrays are unjsonified'''
+        schema = {
+            "fields": [
+                { "name": "abc", "type": "string" }
+            ]
+        }
+        indict = {
+            "schema": json.dumps(schema),
+            "otherval": json.dumps(schema),
+            "x": "{'abc': 1"
+        }
+        exp =  {
+            "schema": schema,
+            "otherval": schema,
+            # fake json object - not really ... but looks like it ...
+            "x": "{'abc': 1"
+        }
+        out = converter.ckan_resource_to_fd_resource(indict)
+        assert out == exp
+
+        indict = {
+            "x": "hello world",
+            "y": "1.3"
+            }
+        exp = {
+            "x": "hello world",
+            "y": "1.3"
+            }
+        out = converter.ckan_resource_to_fd_resource(indict)
+        assert out == exp
 
     def test_keys_are_removed_that_should_be(self):
         indict = {
@@ -80,6 +110,8 @@ class TestResourceConversion:
         out = converter.ckan_resource_to_fd_resource(indict)
         assert out == exp
 
+    # TODO: remove we don't need to test pass through other than all in one ...
+    # (and poss with random values)
     def test_resource_description(self):
         self.resource_dict.update({
             'description': 'GDPs list',
@@ -88,6 +120,7 @@ class TestResourceConversion:
         resource = result.get('resources')[0]
         assert resource.get('description') == self.resource_dict['description']
 
+    # TODO
     def test_resource_format(self):
         self.resource_dict.update({
             'format': 'CSV',
