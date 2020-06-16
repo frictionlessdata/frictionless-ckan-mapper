@@ -267,21 +267,28 @@ class TestPackageConversion:
             'location': {'country': 'China'},
         }
 
+    def test_resources_are_converted(self):
+        # Package has multiple resources
+        new_resource = {
+            'id': '12345',
+            'name': 'data2.csv',
+            'url': 'http://someotherplace.com/data2.csv'
+        }
+        indict = {
+            'name': 'gdp',
+            'title': 'Countries GDP',
+            'resources': [self.resource_dict, new_resource],
+        }
+        result = converter.dataset(indict)
+        assert len(result['resources']) == 2
 
-'''
-# TODO: Add following tests:
+        # Package has a single resource
+        result = converter.dataset(self.dataset_dict)
+        assert len(result['resources']) == 1
 
-test_dataset_license -> This is different from the current specs:
-The test expects `license` as a dict, but the specs expect a list of licenses:
-    licenses: [
-        license1: {},
-        license2: {}
-    ]
-https://specs.frictionlessdata.io/schemas/data-package.json
-
-test_dataset_maintainer -> There is no "author" in a datapackage according to
-the specs.  Maybe this should map to contributors?
-
-test_dataset_ckan_url -> CKAN should now be using "url",
-not "ckan_url". (?)
-'''
+    # TODO: CKAN object does not necessarily have `resources` (optional)
+    # Frictionless object MUST have a `resources` property.
+    # Should the implementation raise an error as the datapackage
+    # would not be valid without at least one resource?
+    def _test_empty_resources_raise_error(self):
+        pass
