@@ -17,22 +17,6 @@ class TestResourceConversion:
       Schema set in schema field
     '''
 
-    @classmethod
-    def setup_class(self):
-        self.converter = ckan_to_frictionless.CKANToFrictionless()
-
-        self.resource_dict = {
-            'id': '1234',
-            'name': 'data.csv',
-            'url': 'http://someplace.com/data.csv'
-        }
-        self.dataset_dict = {
-            'name': 'gdp',
-            'title': 'Countries GDP',
-            'version': '1.0',
-            'resources': [self.resource_dict],
-        }
-
     def _test_fixtures(self):
         inpath = 'tests/fixtures/ckan_resource.json'
         exppath = 'tests/fixtures/frictionless_resource.json'
@@ -78,7 +62,8 @@ class TestResourceConversion:
         indict = {
             "package_id": "xxx",
             "position": 2,
-            "url_type": "file"
+            "datastore_active": True,
+            "state": "active"
         }
         exp = {}
         out = converter.resource(indict)
@@ -100,7 +85,8 @@ class TestResourceConversion:
             "url_type": "upload"
         }
         exp = {
-            'path': 'http://www.somewhere.com/data.csv'
+            'path': 'http://www.somewhere.com/data.csv',
+            'url_type': "upload"
         }
         out = converter.resource(indict)
         assert out == exp

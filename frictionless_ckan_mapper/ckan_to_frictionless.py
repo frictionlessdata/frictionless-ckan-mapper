@@ -16,11 +16,12 @@ class CKANToFrictionless:
         'url': 'path'
     }
 
-    # TODO: Do we want to keep everything except `package_id` and
-    # `position`? The current test
-    # `test_resource_path_is_set_even_for_uploaded_resources`
-    # is not expecting `url_type` in its output.
-    resource_keys_to_remove = ['package_id', 'position', 'url_type']
+    resource_keys_to_remove = [
+        'package_id',
+        'position',
+        'datastore_active',
+        'state'
+        ]
 
     def resource(self, ckandict):
         '''Convert a CKAN resource to Frictionless Resource.
