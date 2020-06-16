@@ -19,7 +19,7 @@ class TestResourceConversion:
       Schema set in schema field
     '''
 
-    def _test_fixtures(self):
+    def test_fixtures(self):
         inpath = 'tests/fixtures/ckan_resource.json'
         exppath = 'tests/fixtures/frictionless_resource.json'
         converter = ckan_to_frictionless.CKANToFrictionless()

@@ -42,11 +42,6 @@ class CKANToFrictionless:
             if k in resource:
                 del resource[k]
 
-        # TODO: remove as CKAN Resource does not have extras (CKAN has already
-        # # unpacked them)
-        if 'extras' in resource:
-            resource['extras'] = json.loads(resource['extras'])
-
         # unjsonify values
         # * check if string
         # * if starts with [ or { => json.loads it ...
