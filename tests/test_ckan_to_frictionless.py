@@ -37,7 +37,7 @@ class TestResourceConversion:
         converter = ckan_to_frictionless.CKANToFrictionless()
         indict = json.load(open(inpath))
         exp = json.load(open(exppath))
-        out = converter.ckan_resource_to_fd_resource(indict)
+        out = converter.resource(indict)
         assert out == exp
 
     def test_values_are_unjsonified(self):
@@ -58,7 +58,7 @@ class TestResourceConversion:
             # fake json object - not really ... but looks like it ...
             "x": "{'abc': 1"
         }
-        out = converter.ckan_resource_to_fd_resource(indict)
+        out = converter.resource(indict)
         assert out == exp
 
         indict = {
@@ -69,7 +69,7 @@ class TestResourceConversion:
             "x": "hello world",
             "y": "1.3"
             }
-        out = converter.ckan_resource_to_fd_resource(indict)
+        out = converter.resource(indict)
         assert out == exp
 
     def test_keys_are_removed_that_should_be(self):
@@ -79,7 +79,7 @@ class TestResourceConversion:
             "url_type": "file"
         }
         exp = {}
-        out = converter.ckan_resource_to_fd_resource(indict)
+        out = converter.resource(indict)
         assert out == exp
 
     def test_resource_url(self):
@@ -89,7 +89,7 @@ class TestResourceConversion:
         exp =  {
             "path": "http://www.somewhere.com/data.csv"
             }
-        out = converter.ckan_resource_to_fd_resource(indict)
+        out = converter.resource(indict)
         assert out == exp
 
     def test_resource_path_is_set_even_for_uploaded_resources(self):
@@ -100,7 +100,7 @@ class TestResourceConversion:
         exp = {
             'path': 'http://www.somewhere.com/data.csv'
         }
-        out = converter.ckan_resource_to_fd_resource(indict)
+        out = converter.resource(indict)
         assert out == exp
 
     def test_resource_keys_pass_through(self):
@@ -119,7 +119,7 @@ class TestResourceConversion:
             '1dafak': 'abbbb'
         }
         exp = indict
-        out = converter.ckan_resource_to_fd_resource(indict)
+        out = converter.resource(indict)
         assert out == exp
 
     def test_resource_name_slugifies_the_name_and_adds_title(self):
@@ -129,7 +129,7 @@ class TestResourceConversion:
         exp = {
             'name': 'the-name'
         }
-        out = converter.ckan_resource_to_fd_resource(indict)
+        out = converter.resource(indict)
         assert out == exp
 
         indict = {
@@ -138,7 +138,7 @@ class TestResourceConversion:
         exp = {
             'name': 'lista-de-pibs-dos-paises-51'
         }
-        out = converter.ckan_resource_to_fd_resource(indict)
+        out = converter.resource(indict)
         assert out == exp
 
     def test_resource_name_converts_unicode_characters(self):
@@ -148,9 +148,9 @@ class TestResourceConversion:
         exp = {
             'name': 'mo-shi-kai-tou-nan'
         }
-        out = converter.ckan_resource_to_fd_resource(indict)
+        out = converter.resource(indict)
         assert out == exp
-
+    
 
 class TestPackageConversion:
     @classmethod
@@ -186,11 +186,11 @@ class TestPackageConversion:
             'license_title': license['title'],
             'license_url': license['url'],
         }
-        out = self.converter.dataset_to_datapackage(indict)
+        out = self.converter.dataset(indict)
         assert out['license'] == license
 
     def test_basic_dataset_in_setup_is_valid(self):
-        converter.dataset_to_datapackage(self.dataset_dict)
+        converter.dataset(self.dataset_dict)
 
     def test_dataset_only_requires_a_name_to_be_valid(self):
         invalid_dataset_dict = {}
@@ -204,9 +204,9 @@ class TestPackageConversion:
 
         }
 
-        converter.dataset_to_datapackage(valid_dataset_dict)
+        converter.dataset(valid_dataset_dict)
         with pytest.raises(KeyError):
-            converter.dataset_to_datapackage(invalid_dataset_dict)
+            converter.dataset(invalid_dataset_dict)
 
     def test_dataset_name_title_and_version(self):
         self.dataset_dict.update({
@@ -214,7 +214,7 @@ class TestPackageConversion:
             'title': 'Countries GDP',
             'version': '1.0',
         })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
+        result = converter.dataset(self.dataset_dict)
         assert result['title'] == self.dataset_dict['title']
         assert result['name'] == self.dataset_dict['name']
         assert result['version'] == self.dataset_dict['version']
@@ -223,7 +223,7 @@ class TestPackageConversion:
         self.dataset_dict.update({
             'notes': 'Country, regional and world GDP in current US Dollars.'
         })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
+        result = converter.dataset(self.dataset_dict)
         assert result.get('description') == self.dataset_dict['notes']
 
     def test_dataset_author_and_source(self):
@@ -239,7 +239,7 @@ class TestPackageConversion:
             'author_email': sources[0]['email'],
             'url': sources[0]['path']
         })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
+        result = converter.dataset(self.dataset_dict)
         assert result.get('sources') == sources
 
     def test_dataset_tags(self):
@@ -262,7 +262,7 @@ class TestPackageConversion:
                 }
             ]
         })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
+        result = converter.dataset(self.dataset_dict)
         assert result.get('keywords') == keywords
 
     def test_dataset_extras(self):
@@ -274,7 +274,7 @@ class TestPackageConversion:
                 {'key': 'location', 'value': '{"country": "China"}'},
             ]
         })
-        result = converter.dataset_to_datapackage(self.dataset_dict)
+        result = converter.dataset(self.dataset_dict)
         assert result.get('extras') == {
             'title_cn': u'國內生產總值',
             'years': [2015, 2016],

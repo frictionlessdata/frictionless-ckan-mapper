@@ -17,7 +17,7 @@ class CKANToFrictionless:
     # is not expecting `url_type` in its output.
     resource_keys_to_remove = ['package_id', 'position', 'url_type']
 
-    def ckan_resource_to_fd_resource(self, ckandict):
+    def resource(self, ckandict):
         '''Convert a CKAN resource to Frictionless Resource.
 
         1. Remove unneeded keys
@@ -85,7 +85,7 @@ class CKANToFrictionless:
         'url': 'path',
     }
 
-    def dataset_to_datapackage(self, ckandict):
+    def dataset(self, ckandict):
         '''Convert a CKAN Package (Dataset) to Frictionless Package.
 
         1. Remove unneeded keys
@@ -139,7 +139,6 @@ class CKANToFrictionless:
         outdict['name'] = outdict['name'].replace('-', '_')
 
         # Reformat resources inside package
-        outdict['resources'] = [self.ckan_resource_to_fd_resource(
-            res) for res in outdict['resources']]
+        outdict['resources'] = [self.resource(res) for res in outdict['resources']]
 
         return outdict
