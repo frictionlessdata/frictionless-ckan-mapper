@@ -21,7 +21,7 @@ class CKANToFrictionless:
         'position',
         'datastore_active',
         'state'
-        ]
+    ]
 
     def resource(self, ckandict):
         '''Convert a CKAN resource to Frictionless Resource.
@@ -75,6 +75,9 @@ class CKANToFrictionless:
 
         return resource
 
+    dataset_keys_to_remove = [
+        'state'
+    ]
     package_mapping = {
         'notes': 'description',
         'tags': 'keywords',  # this is flattened and simplified
@@ -153,5 +156,9 @@ class CKANToFrictionless:
                 'type': outdict['license_id'],
                 }]
             del outdict['license_id']
+
+        for k in self.dataset_keys_to_remove:
+            if k in outdict:
+                del outdict[k]
 
         return outdict

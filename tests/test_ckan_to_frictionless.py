@@ -172,9 +172,6 @@ class TestPackageConversion:
             'resources': [self.resource_dict],
         }
 
-    def test_delete_keys(self):
-        pass
-
     def test_author_and_maintainer(self):
         pass
 
@@ -183,7 +180,7 @@ class TestPackageConversion:
             'license_id': 'odc-odbl',
             # TODO: check package_show in CKAN
             # 'license_title': 'Open Data Commons Open Database License',
-            # 'license_url': 'http://opendefinition.org/licenses/odc-odbl/'
+            # 'license_url': 'http://opendefinition.org/licenses/odc-odbl/'
         }
         exp = {
             "licenses": [{
@@ -292,3 +289,12 @@ class TestPackageConversion:
     # would not be valid without at least one resource?
     def _test_empty_resources_raise_error(self):
         pass
+
+    def test_keys_are_removed_that_should_be(self):
+        indict = {
+            'state': 'active'
+        }
+        exp = {
+        }
+        out = converter.dataset(indict)
+        assert out == exp
