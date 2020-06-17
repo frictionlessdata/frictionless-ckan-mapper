@@ -298,3 +298,16 @@ class TestPackageConversion:
         }
         out = converter.dataset(indict)
         assert out == exp
+
+    def test_null_values_are_stripped(self):
+        indict = {
+            'id': '12312',
+            'title': 'title here',
+            'format': None
+        }
+        exp = {
+            'id': '12312',
+            'title': 'title here'
+        }
+        out = converter.dataset(indict)
+        assert out == exp
