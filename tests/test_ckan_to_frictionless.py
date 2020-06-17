@@ -183,9 +183,10 @@ class TestPackageConversion:
             # 'license_url': 'http://opendefinition.org/licenses/odc-odbl/'
         }
         exp = {
-            "licenses": [{
+            'licenses': [{
                 'type': 'odc-odbl',
-            }]
+            }],
+            'resources': []
         }
         out = converter.dataset(indict)
         assert out == exp
@@ -276,25 +277,32 @@ class TestPackageConversion:
             'title': 'Countries GDP',
             'resources': [self.resource_dict, new_resource],
         }
-        result = converter.dataset(indict)
-        assert len(result['resources']) == 2
+        out = converter.dataset(indict)
+        assert len(out['resources']) == 2
 
         # Package has a single resource
-        result = converter.dataset(self.dataset_dict)
-        assert len(result['resources']) == 1
+        out = converter.dataset(self.dataset_dict)
+        assert len(out['resources']) == 1
 
-    # TODO: CKAN object does not necessarily have `resources` (optional)
-    # Frictionless object MUST have a `resources` property.
-    # Should the implementation raise an error as the datapackage
-    # would not be valid without at least one resource?
-    def _test_empty_resources_raise_error(self):
-        pass
+    def test_no_resources_return_empty_list(self):
+        indict = {
+            'name': 'gdp',
+            'title': 'Countries GDP',
+        }
+        exp = {
+            'name': 'gdp',
+            'title': 'Countries GDP',
+            'resources': []
+        }
+        out = converter.dataset(indict)
+        assert out == exp
 
     def test_keys_are_removed_that_should_be(self):
         indict = {
             'state': 'active'
         }
         exp = {
+            'resources': []
         }
         out = converter.dataset(indict)
         assert out == exp
