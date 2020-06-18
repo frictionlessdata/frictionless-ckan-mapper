@@ -163,4 +163,8 @@ class CKANToFrictionless:
             if k in outdict:
                 del outdict[k]
 
+        for k in list(outdict.keys()):
+            if outdict[k] is None:
+                del outdict[k]
+
         return outdict
