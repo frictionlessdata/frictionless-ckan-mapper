@@ -382,7 +382,8 @@ class TestPackageConversion:
         }
         exp = {
             'id': '12312',
-            'title': 'title here'
+            'title': 'title here',
+            'resources': []
         }
         out = converter.dataset(indict)
         assert out == exp
