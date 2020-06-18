@@ -178,27 +178,14 @@ class TestPackageConversion:
         out = converter.dataset(indict)
         assert out == exp
 
-    def test_unjsonify_all_extra_values_in_nested_dicts(self):
+    def test_unjsonify_all_extra_values(self):
         indict = {
             'extras': [
                 {
                     'key': 'location',
-                    'value': '{"country": {"China": {"population": ' '"1233214331", "capital": "Beijing"}}}'
-                }
-            ]
-        }
-        out = converter.dataset(indict)
-        exp = {'location':
-               {'country':
-                {'China': {'population': '1233214331',
-                           'capital': 'Beijing'}}
-                }
-               }
-        assert out == exp
-
-    def test_unjsonify_all_extra_values_in_nested_lists(self):
-        indict = {
-            'extras': [
+                    'value': '{"country": {"China": {"population": '
+                             '"1233214331", "capital": "Beijing"}}}'
+                },
                 {
                     'key': 'numbers',
                     'value': '[[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]'
@@ -206,7 +193,15 @@ class TestPackageConversion:
             ]
         }
         out = converter.dataset(indict)
-        exp = {'numbers': [[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]}
+        exp = {
+            "location": {
+                "country":
+                {"China":
+                 {"population": "1233214331",
+                  "capital": "Beijing"}}
+            },
+            "numbers": [[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]
+        }
         assert out == exp
 
     def test_dataset_license(self):
