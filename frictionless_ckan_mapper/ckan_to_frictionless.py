@@ -92,15 +92,28 @@ class CKANToFrictionless:
     def dataset(self, ckandict):
         '''Convert a CKAN Package (Dataset) to Frictionless Package.
 
-        1. Remove unneeded keys
-        2. Expand extras.
-            * ~~Apply heuristic to unjsonify (if starts with [ or { unjsonify~~
+        1. Expand extras.
             * JSON loads everything and on error have a string
-        3. Map keys from CKAN to Frictionless (and reformat if needed)
-        4. Remove keys with null values (CKAN has a lot of null valued keys)
-        4. Apply special formatting for key fields
+        2. Map keys from CKAN to Frictionless (and reformat if needed)
+        3. Remove keys with null values (CKAN has a lot of null valued keys)
+        4. Remove unneeded keys
+        5. Apply special formatting for key fields
         '''
         outdict = dict(ckandict)
+
+        # Convert the structure of extras
+        # structure of extra item is {key: xxx, value: xxx} 
+        if 'extras' in ckandict:
+            for extra in ckandict['extras']:
+                key = extra['key']
+                value = extra['value']
+                try:
+                    value = json.loads(value)
+                except (json_parse_exception, TypeError):
+                    pass
+                outdict[key] = value
+            del outdict['extras']
+
 
         # Remap necessary package keys
         for k, v in self.package_mapping.items():
@@ -116,19 +129,6 @@ class CKANToFrictionless:
                 outdict[v] = ckandict[k]
                 del outdict[k]
 
-        # Convert the structure of extras
-        if outdict.get('extras'):
-            extras = outdict['extras']  # this is a list
-            outdict['extras'] = {}  # we convert to dict
-            for extra in extras:
-                key = extra['key']
-                value = extra['value']
-                try:
-                    value = json.loads(value)
-                except (json_parse_exception, TypeError):
-                    pass
-                result = {key: value}
-                outdict['extras'].update(result)
 
         # Remap properties in sources
         if 'author' in outdict:
@@ -148,8 +148,6 @@ class CKANToFrictionless:
         if 'resources' in outdict:
             outdict['resources'] = [self.resource(res) for res in
                     outdict['resources']]
-        else:
-            outdict['resources'] = []
 
         # TODO: do we always license_id - can we have license_title w/o
         # license_id?

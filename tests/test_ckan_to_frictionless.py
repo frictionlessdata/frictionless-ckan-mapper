@@ -172,6 +172,55 @@ class TestPackageConversion:
             'resources': [self.resource_dict],
         }
 
+    def test_dataset_extras(self):
+        indict = {
+            'extras': [
+                {'key': 'title_cn', 'value': u'國內生產總值'},
+                {'key': 'years', 'value': '[2015, 2016]'},
+                {'key': 'last_year', 'value': 2016},
+                {'key': 'location', 'value': '{"country": "China"}'},
+            ]
+        }
+        exp = {
+            'title_cn': u'國內生產總值',
+            'years': [2015, 2016],
+            'last_year': 2016,
+            'location': {'country': 'China'},
+        }
+        out = converter.dataset(indict)
+        assert out == exp
+
+    def test_unjsonify_all_extra_values_in_nested_dicts(self):
+        indict = {
+            'extras': [
+                {
+                    'key': 'location',
+                    'value': '{"country": {"China": {"population": ' '"1233214331", "capital": "Beijing"}}}'
+                }
+            ]
+        }
+        out = converter.dataset(indict)
+        exp = {'location':
+               {'country':
+                {'China': {'population': '1233214331',
+                           'capital': 'Beijing'}}
+                }
+               }
+        assert out == exp
+
+    def test_unjsonify_all_extra_values_in_nested_lists(self):
+        indict = {
+            'extras': [
+                {
+                    'key': 'numbers',
+                    'value': '[[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]'
+                }
+            ]
+        }
+        out = converter.dataset(indict)
+        exp = {'numbers': [[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]}
+        assert out == exp
+
     def test_author_and_maintainer(self):
         pass
 
@@ -185,8 +234,7 @@ class TestPackageConversion:
         exp = {
             'licenses': [{
                 'type': 'odc-odbl',
-            }],
-            'resources': []
+            }]
         }
         out = converter.dataset(indict)
         assert out == exp
@@ -248,73 +296,6 @@ class TestPackageConversion:
         result = converter.dataset(self.dataset_dict)
         assert result.get('keywords') == keywords
 
-    def test_dataset_extras(self):
-        self.dataset_dict.update({
-            'extras': [
-                {'key': 'title_cn', 'value': u'國內生產總值'},
-                {'key': 'years', 'value': '[2015, 2016]'},
-                {'key': 'last_year', 'value': 2016},
-                {'key': 'location', 'value': '{"country": "China"}'},
-            ]
-        })
-        result = converter.dataset(self.dataset_dict)
-        assert result.get('extras') == {
-            'title_cn': u'國內生產總值',
-            'years': [2015, 2016],
-            'last_year': 2016,
-            'location': {'country': 'China'},
-        }
-
-    def test_unjsonify_all_extra_values_in_nested_dicts(self):
-        self.dataset_dict.update({
-            'extras': [
-                {
-                    'key': 'location',
-                    'value': ('{"country": {"China": {"population": '
-                              '"1233214331", "capital": "Beijing"}}}')
-                }
-            ]
-        })
-        out = converter.dataset(self.dataset_dict)
-        exp = {'location':
-               {'country':
-                {'China': {'population': '1233214331',
-                           'capital': 'Beijing'}}
-                }
-               }
-        assert out.get('extras') == exp
-
-    def test_unjsonify_all_extra_values_in_nested_lists(self):
-        self.dataset_dict.update({
-            'extras': [
-                {
-                    'key': 'numbers',
-                    'value': '[[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]'
-                }
-            ]
-        })
-        out = converter.dataset(self.dataset_dict)
-        exp = {'numbers': [[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]}
-        assert out.get('extras') == exp
-
-    def test_unjsonify_all_extra_values_in_nested_mixed_types(self):
-        self.dataset_dict.update({
-            'extras': [
-                {
-                    'key': 'numbers',
-                    'value': ('{"lists": [[[1, 2, 3],'
-                    '{"total": 3, "nums": [3,4]}], [[7, 6, 0]]]}'
-                    )
-                }
-            ]
-        })
-        out = converter.dataset(self.dataset_dict)
-        exp = {'numbers':
-               {"lists":
-                [[[1, 2, 3], {"total": 3, "nums": [3, 4]}], [[7, 6, 0]]]}
-               }
-        assert out.get('extras') == exp
-
     def test_resources_are_converted(self):
         # Package has multiple resources
         new_resource = {
@@ -333,19 +314,6 @@ class TestPackageConversion:
         # Package has a single resource
         out = converter.dataset(self.dataset_dict)
         assert len(out['resources']) == 1
-
-    def test_no_resources_return_empty_list(self):
-        indict = {
-            'name': 'gdp',
-            'title': 'Countries GDP',
-        }
-        exp = {
-            'name': 'gdp',
-            'title': 'Countries GDP',
-            'resources': []
-        }
-        out = converter.dataset(indict)
-        assert out == exp
 
     def test_all_keys_are_passed_through(self):
         indict = {
@@ -369,7 +337,6 @@ class TestPackageConversion:
             'state': 'active'
         }
         exp = {
-            'resources': []
         }
         out = converter.dataset(indict)
         assert out == exp
@@ -382,8 +349,7 @@ class TestPackageConversion:
         }
         exp = {
             'id': '12312',
-            'title': 'title here',
-            'resources': []
+            'title': 'title here'
         }
         out = converter.dataset(indict)
         assert out == exp
