@@ -71,13 +71,17 @@ class TestResourceConversion:
         out = converter.resource(indict)
         assert out == exp
 
-    def test_resource_url(self):
+    def test_resource_mapping(self):
         indict = {
-            "url": "http://www.somewhere.com/data.csv"
-            }
+            "url": "http://www.somewhere.com/data.csv",
+            "size": 110,
+            "mimetype": "text/csv"
+        }
         exp = {
-            "path": "http://www.somewhere.com/data.csv"
-            }
+            "path": "http://www.somewhere.com/data.csv",
+            "bytes": 110,
+            "mediatype": "text/csv"
+        }
         out = converter.resource(indict)
         assert out == exp
 
