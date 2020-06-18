@@ -265,6 +265,56 @@ class TestPackageConversion:
             'location': {'country': 'China'},
         }
 
+    def test_unjsonify_all_extra_values_in_nested_dicts(self):
+        self.dataset_dict.update({
+            'extras': [
+                {
+                    'key': 'location',
+                    'value': ('{"country": {"China": {"population": '
+                              '"1233214331", "capital": "Beijing"}}}')
+                }
+            ]
+        })
+        out = converter.dataset(self.dataset_dict)
+        exp = {'location':
+               {'country':
+                {'China': {'population': '1233214331',
+                           'capital': 'Beijing'}}
+                }
+               }
+        assert out.get('extras') == exp
+
+    def test_unjsonify_all_extra_values_in_nested_lists(self):
+        self.dataset_dict.update({
+            'extras': [
+                {
+                    'key': 'numbers',
+                    'value': '[[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]'
+                }
+            ]
+        })
+        out = converter.dataset(self.dataset_dict)
+        exp = {'numbers': [[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]}
+        assert out.get('extras') == exp
+
+    def test_unjsonify_all_extra_values_in_nested_mixed_types(self):
+        self.dataset_dict.update({
+            'extras': [
+                {
+                    'key': 'numbers',
+                    'value': ('{"lists": [[[1, 2, 3],'
+                    '{"total": 3, "nums": [3,4]}], [[7, 6, 0]]]}'
+                    )
+                }
+            ]
+        })
+        out = converter.dataset(self.dataset_dict)
+        exp = {'numbers':
+               {"lists":
+                [[[1, 2, 3], {"total": 3, "nums": [3, 4]}], [[7, 6, 0]]]}
+               }
+        assert out.get('extras') == exp
+
     def test_resources_are_converted(self):
         # Package has multiple resources
         new_resource = {
