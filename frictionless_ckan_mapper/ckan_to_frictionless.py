@@ -93,9 +93,9 @@ class CKANToFrictionless:
         4. Remove unneeded keys
         5. Apply special formatting for key fields
         '''
-        outdict = dict(ckandict) 
+        outdict = dict(ckandict)
         # Convert the structure of extras
-        # structure of extra item is {key: xxx, value: xxx} 
+        # structure of extra item is {key: xxx, value: xxx}
         if 'extras' in ckandict:
             for extra in ckandict['extras']:
                 key = extra['key']
@@ -112,7 +112,7 @@ class CKANToFrictionless:
             if k in ckandict:
                 outdict[v] = ckandict[k]
                 del outdict[k]
-        
+
         # tags
         if 'tags' in ckandict:
             outdict['keywords'] = [ tag['name'] for tag in ckandict['tags'] ]
