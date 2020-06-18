@@ -183,9 +183,10 @@ class TestPackageConversion:
             # 'license_url': 'http://opendefinition.org/licenses/odc-odbl/'
         }
         exp = {
-            "licenses": [{
+            'licenses': [{
                 'type': 'odc-odbl',
-            }]
+            }],
+            'resources': []
         }
         out = converter.dataset(indict)
         assert out == exp
@@ -264,6 +265,56 @@ class TestPackageConversion:
             'location': {'country': 'China'},
         }
 
+    def test_unjsonify_all_extra_values_in_nested_dicts(self):
+        self.dataset_dict.update({
+            'extras': [
+                {
+                    'key': 'location',
+                    'value': ('{"country": {"China": {"population": '
+                              '"1233214331", "capital": "Beijing"}}}')
+                }
+            ]
+        })
+        out = converter.dataset(self.dataset_dict)
+        exp = {'location':
+               {'country':
+                {'China': {'population': '1233214331',
+                           'capital': 'Beijing'}}
+                }
+               }
+        assert out.get('extras') == exp
+
+    def test_unjsonify_all_extra_values_in_nested_lists(self):
+        self.dataset_dict.update({
+            'extras': [
+                {
+                    'key': 'numbers',
+                    'value': '[[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]'
+                }
+            ]
+        })
+        out = converter.dataset(self.dataset_dict)
+        exp = {'numbers': [[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]}
+        assert out.get('extras') == exp
+
+    def test_unjsonify_all_extra_values_in_nested_mixed_types(self):
+        self.dataset_dict.update({
+            'extras': [
+                {
+                    'key': 'numbers',
+                    'value': ('{"lists": [[[1, 2, 3],'
+                    '{"total": 3, "nums": [3,4]}], [[7, 6, 0]]]}'
+                    )
+                }
+            ]
+        })
+        out = converter.dataset(self.dataset_dict)
+        exp = {'numbers':
+               {"lists":
+                [[[1, 2, 3], {"total": 3, "nums": [3, 4]}], [[7, 6, 0]]]}
+               }
+        assert out.get('extras') == exp
+
     def test_resources_are_converted(self):
         # Package has multiple resources
         new_resource = {
@@ -276,25 +327,49 @@ class TestPackageConversion:
             'title': 'Countries GDP',
             'resources': [self.resource_dict, new_resource],
         }
-        result = converter.dataset(indict)
-        assert len(result['resources']) == 2
+        out = converter.dataset(indict)
+        assert len(out['resources']) == 2
 
         # Package has a single resource
-        result = converter.dataset(self.dataset_dict)
-        assert len(result['resources']) == 1
+        out = converter.dataset(self.dataset_dict)
+        assert len(out['resources']) == 1
 
-    # TODO: CKAN object does not necessarily have `resources` (optional)
-    # Frictionless object MUST have a `resources` property.
-    # Should the implementation raise an error as the datapackage
-    # would not be valid without at least one resource?
-    def _test_empty_resources_raise_error(self):
-        pass
+    def test_no_resources_return_empty_list(self):
+        indict = {
+            'name': 'gdp',
+            'title': 'Countries GDP',
+        }
+        exp = {
+            'name': 'gdp',
+            'title': 'Countries GDP',
+            'resources': []
+        }
+        out = converter.dataset(indict)
+        assert out == exp
+
+    def test_all_keys_are_passed_through(self):
+        indict = {
+            'description': 'GDPs list',
+            'schema': {
+                'fields': [
+                    {'name': 'id', 'type': 'integer'},
+                    {'name': 'title', 'type': 'string'},
+                ]
+            },
+            # random
+            'adfajka': 'aaaa',
+            '1dafak': 'abbbb'
+        }
+        exp = indict
+        out = converter.resource(indict)
+        assert out == exp
 
     def test_keys_are_removed_that_should_be(self):
         indict = {
             'state': 'active'
         }
         exp = {
+            'resources': []
         }
         out = converter.dataset(indict)
         assert out == exp
