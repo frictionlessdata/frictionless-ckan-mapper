@@ -56,7 +56,7 @@ class TestResourceConversion:
         exp = {
             "x": "hello world",
             "y": "1.3"
-            }
+        }
         out = converter.resource(indict)
         assert out == exp
 
@@ -160,36 +160,20 @@ class TestResourceConversion:
 
 
 class TestPackageConversion:
-    @classmethod
-    def setup_class(self):
-        self.converter = ckan_to_frictionless.CKANToFrictionless()
-
-        self.resource_dict = {
-            'id': '1234',
-            'name': 'data.csv',
-            'url': 'http://someplace.com/data.csv'
-        }
-        self.dataset_dict = {
-            'name': 'gdp',
-            'title': 'Countries GDP',
-            'version': '1.0',
-            'resources': [self.resource_dict],
-        }
-
     def test_dataset_extras(self):
         indict = {
             'extras': [
                 {'key': 'title_cn', 'value': u'國內生產總值'},
                 {'key': 'years', 'value': '[2015, 2016]'},
                 {'key': 'last_year', 'value': 2016},
-                {'key': 'location', 'value': '{"country": "China"}'},
+                {'key': 'location', 'value': '{"country": "China"}'}
             ]
         }
         exp = {
             'title_cn': u'國內生產總值',
             'years': [2015, 2016],
             'last_year': 2016,
-            'location': {'country': 'China'},
+            'location': {'country': 'China'}
         }
         out = converter.dataset(indict)
         assert out == exp
@@ -360,8 +344,8 @@ class TestPackageConversion:
         }
         exp = {
             'contributors': [{
-                    'title': 'Datopians'
-                }]
+                'title': 'Datopians'
+            }]
         }
         out = converter.dataset(indict)
         assert out == exp
@@ -384,28 +368,38 @@ class TestPackageConversion:
             ]
         }
         exp = {
-            'keywords': [ 'economy', 'worldbank' ]
+            'keywords': ['economy', 'worldbank']
         }
         out = converter.dataset(indict)
         assert out == exp
 
     def test_resources_are_converted(self):
         # Package has multiple resources
-        new_resource = {
+        resource_1 = {
+            'id': '1234',
+            'name': 'data.csv',
+            'url': 'http://someplace.com/data.csv'
+        }
+        resource_2 = {
             'id': '12345',
             'name': 'data2.csv',
             'url': 'http://someotherplace.com/data2.csv'
         }
-        indict = {
+        indict_2_resources = {
             'name': 'gdp',
             'title': 'Countries GDP',
-            'resources': [self.resource_dict, new_resource],
+            'resources': [resource_1, resource_2]
         }
-        out = converter.dataset(indict)
+        indict_1_resource = {
+            'name': 'gdp',
+            'title': 'Countries GDP',
+            'resources': [resource_1]
+        }
+        out = converter.dataset(indict_2_resources)
         assert len(out['resources']) == 2
 
         # Package has a single resource
-        out = converter.dataset(self.dataset_dict)
+        out = converter.dataset(indict_1_resource)
         assert len(out['resources']) == 1
 
     def test_all_keys_are_passed_through(self):
