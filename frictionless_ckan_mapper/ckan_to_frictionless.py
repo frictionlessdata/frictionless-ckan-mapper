@@ -148,6 +148,8 @@ class CKANToFrictionless:
         if 'resources' in outdict:
             outdict['resources'] = [self.resource(res) for res in
                     outdict['resources']]
+        else:
+            outdict['resources'] = []
 
         # TODO: do we always license_id - can we have license_title w/o
         # license_id?
