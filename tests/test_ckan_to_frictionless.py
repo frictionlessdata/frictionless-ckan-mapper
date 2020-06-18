@@ -347,6 +347,23 @@ class TestPackageConversion:
         out = converter.dataset(indict)
         assert out == exp
 
+    def test_all_keys_are_passed_through(self):
+        indict = {
+            'description': 'GDPs list',
+            'schema': {
+                'fields': [
+                    {'name': 'id', 'type': 'integer'},
+                    {'name': 'title', 'type': 'string'},
+                ]
+            },
+            # random
+            'adfajka': 'aaaa',
+            '1dafak': 'abbbb'
+        }
+        exp = indict
+        out = converter.resource(indict)
+        assert out == exp
+
     def test_keys_are_removed_that_should_be(self):
         indict = {
             'state': 'active'
