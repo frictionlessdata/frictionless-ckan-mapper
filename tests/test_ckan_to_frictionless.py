@@ -225,10 +225,47 @@ class TestPackageConversion:
         exp = {'numbers': [[[1, 2, 3], [2, 4, 5]], [[7, 6, 0]]]}
         assert out == exp
 
-    def test_author_and_maintainer(self):
-        pass
-
     def test_dataset_license(self):
+        indict = {
+            'license_id': 'odc-odbl'
+        }
+        exp = {
+            'licenses': [{
+                'type': 'odc-odbl'
+            }]
+        }
+        out = converter.dataset(indict)
+        assert out == exp
+
+        indict = {
+            'license_id': 'odc-odbl',
+            'license_title': 'Open Data Commons Open Database License'
+        }
+        exp = {
+            'licenses': [{
+                'type': 'odc-odbl',
+                'title': 'Open Data Commons Open Database License'
+            }]
+        }
+        out = converter.dataset(indict)
+        assert out == exp
+
+        # finally what if license*s* already there ...
+        indict = {
+            'licenses': [{
+                'type': 'odc-pddl'
+            }],
+            'license_id': 'odc-odbl'
+        }
+        exp = {
+            'licenses': [{
+                'type': 'odc-pddl'
+            }]
+        }
+        out = converter.dataset(indict)
+        assert out == exp
+
+    def test_dataset_license_with_licenses_in_extras(self):
         indict = {
             'license_id': 'odc-odbl',
             # TODO: check package_show in CKAN
@@ -243,45 +280,94 @@ class TestPackageConversion:
         out = converter.dataset(indict)
         assert out == exp
 
-    def test_dataset_name_title_and_version(self):
-        self.dataset_dict.update({
+    def test_keys_are_passed_through(self):
+        indict = {
             'name': 'gdp',
             'title': 'Countries GDP',
             'version': '1.0',
-        })
-        result = converter.dataset(self.dataset_dict)
-        assert result['title'] == self.dataset_dict['title']
-        assert result['name'] == self.dataset_dict['name']
-        assert result['version'] == self.dataset_dict['version']
+            # random
+            'xxx': 'aldka'
+        }
+        out = converter.dataset(indict)
+        exp = {
+            'name': 'gdp',
+            'title': 'Countries GDP',
+            'version': '1.0',
+            'xxx': 'aldka'
+        }
+        assert out == exp
 
-    def test_dataset_notes(self):
-        self.dataset_dict.update({
-            'notes': 'Country, regional and world GDP in current US Dollars.'
-        })
-        result = converter.dataset(self.dataset_dict)
-        assert result.get('description') == self.dataset_dict['notes']
+    def test_key_mappings(self):
+        # notes
+        indict = {
+            'notes': 'Country, regional and world GDP',
+            'url': 'https://datopian.com'
+        }
+        exp = {
+            'description': 'Country, regional and world GDP',
+            'homepage': 'https://datopian.com'
+        }
+        out = converter.dataset(indict)
+        assert out == exp
 
-    def test_dataset_author_and_source(self):
-        sources = [
-            {
-                'title': 'World Bank and OECD',
-                'email': 'someone@worldbank.org',
-                'path': 'http://data.worldbank.org/indicator/NY.GDP.MKTP.CD',
-            }
-        ]
-        self.dataset_dict.update({
-            'author': sources[0]['title'],
-            'author_email': sources[0]['email'],
-            'url': sources[0]['path']
-        })
-        result = converter.dataset(self.dataset_dict)
-        assert result.get('sources') == sources
+    def test_dataset_author_and_maintainer(self):
+        indict = {
+            'author': 'World Bank and OECD',
+            'author_email': 'someone@worldbank.org'
+        }
+        exp = {
+            'contributors': [
+                {
+                    'title': 'World Bank and OECD',
+                    'email': 'someone@worldbank.org',
+                    'role': 'author'
+                }
+            ]
+        }
+        out = converter.dataset(indict)
+        assert out == exp
+
+        indict = {
+            'author': 'World Bank and OECD',
+            'author_email': 'someone@worldbank.org',
+            'maintainer': 'Datopian',
+            'maintainer_email': 'helloxxx@datopian.com'
+        }
+        exp = {
+            'contributors': [
+                {
+                    'title': 'World Bank and OECD',
+                    'email': 'someone@worldbank.org',
+                    'role': 'author'
+                },
+                {
+                    'title': 'Datopian',
+                    'email': 'helloxxx@datopian.com',
+                    'role': 'maintainer'
+                },
+
+            ]
+        }
+        out = converter.dataset(indict)
+        assert out == exp
+
+        # if we already have contributors use that ...
+        indict = {
+            'contributors': [{
+                'title': 'Datopians'
+            }],
+            'author': 'World Bank and OECD',
+        }
+        exp = {
+            'contributors': [{
+                    'title': 'Datopians'
+                }]
+        }
+        out = converter.dataset(indict)
+        assert out == exp
 
     def test_dataset_tags(self):
-        keywords = [
-            'economy', 'worldbank'
-        ]
-        self.dataset_dict.update({
+        indict = {
             'tags': [
                 {
                     'display_name': 'economy',
@@ -296,9 +382,12 @@ class TestPackageConversion:
                     'state': 'active'
                 }
             ]
-        })
-        result = converter.dataset(self.dataset_dict)
-        assert result.get('keywords') == keywords
+        }
+        exp = {
+            'keywords': [ 'economy', 'worldbank' ]
+        }
+        out = converter.dataset(indict)
+        assert out == exp
 
     def test_resources_are_converted(self):
         # Package has multiple resources

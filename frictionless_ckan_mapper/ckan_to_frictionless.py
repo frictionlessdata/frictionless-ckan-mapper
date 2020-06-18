@@ -78,15 +78,9 @@ class CKANToFrictionless:
     dataset_keys_to_remove = [
         'state'
     ]
-    package_mapping = {
+    dataset_mapping = {
         'notes': 'description',
-        'tags': 'keywords',  # this is flattened and simplified
-    }
-
-    package_sources_mapping = {
-        'author': 'title',
-        'author_email': 'email',
-        'url': 'path',
+        'url': 'homepage'
     }
 
     def dataset(self, ckandict):
@@ -99,8 +93,7 @@ class CKANToFrictionless:
         4. Remove unneeded keys
         5. Apply special formatting for key fields
         '''
-        outdict = dict(ckandict)
-
+        outdict = dict(ckandict) 
         # Convert the structure of extras
         # structure of extra item is {key: xxx, value: xxx} 
         if 'extras' in ckandict:
@@ -114,52 +107,66 @@ class CKANToFrictionless:
                 outdict[key] = value
             del outdict['extras']
 
-
-        # Remap necessary package keys
-        for k, v in self.package_mapping.items():
-            if k in ckandict and k == 'url':
+        # Map dataset keys
+        for k, v in self.dataset_mapping.items():
+            if k in ckandict:
                 outdict[v] = ckandict[k]
                 del outdict[k]
-            elif k in ckandict and k == 'tags':
-                outdict[v] = []
-                for tag in ckandict[k]:
-                    outdict[v].append(tag['name'])
-                del outdict[k]
-            elif k in ckandict:
-                outdict[v] = ckandict[k]
-                del outdict[k]
+        
+        # tags
+        if 'tags' in ckandict:
+            outdict['keywords'] = [ tag['name'] for tag in ckandict['tags'] ]
+            del outdict['tags']
 
+        # author, maintainer => contributors
+        # what to do if contributors already there? Options:
+        # 1. Just use that and ignore author/maintainer
+        # 2. replace with author/maintainer
+        # 3. merge i.e. use contributors and merge in (this is sort of complex)
+        # e.g. how to i avoid duplicating the same person
+        # ANS: for now, is 1 ...
+        if (not ('contributors' in outdict and outdict['contributors']) and
+                ('author' in outdict or 'maintainer' in outdict)):
+            outdict['contributors'] = []
+            if 'author' in outdict and outdict['author']:
+                contrib = {
+                    'title': outdict['author'],
+                    'role': 'author'
+                    }
+                if 'author_email' in outdict:
+                    contrib['email'] = outdict['author_email']
+                outdict['contributors'].append(contrib)
+            if 'maintainer' in outdict and outdict['maintainer']:
+                contrib = {
+                    'title': outdict['maintainer'],
+                    'role': 'maintainer'
+                    }
+                if 'maintainer_email' in outdict:
+                    contrib['email'] = outdict['maintainer_email']
+                outdict['contributors'].append(contrib)
 
-        # Remap properties in sources
-        if 'author' in outdict:
-            outdict['sources'] = []
-            source = {}
-            for k, v in self.package_sources_mapping.items():
-                if k in outdict:
-                    source[v] = outdict[k]
-                    del outdict[k]
-            outdict['sources'].append(source)
+        for k in ['author', 'author_email', 'maintainer', 'maintainer_email']:
+            outdict.pop(k, None)
 
-        # Reformat expected output for some keys in package
-        if 'name' in outdict:
-            outdict['name'] = outdict['name'].replace('-', '_')
-
-        # Reformat resources inside package
+        # Reformat resources inside dataset
         if 'resources' in outdict:
             outdict['resources'] = [self.resource(res) for res in
                     outdict['resources']]
 
-        # TODO: do we always license_id - can we have license_title w/o
+        # package_show can have license_id and license_title
+        # TODO: do we always license_id i.e. can we have license_title w/o
         # license_id?
-        if 'license_id' in outdict:
+        if ('licenses' not in outdict and 'license_id' in outdict):
             outdict['licenses'] = [{
                 'type': outdict['license_id'],
                 }]
-            del outdict['license_id']
+            if 'license_title' in outdict:
+                outdict['licenses'][0]['title'] = outdict['license_title']
+        outdict.pop('license_id', None)
+        outdict.pop('license_title', None)
 
         for k in self.dataset_keys_to_remove:
-            if k in outdict:
-                del outdict[k]
+            outdict.pop(k, None)
 
         for k in list(outdict.keys()):
             if outdict[k] is None:
