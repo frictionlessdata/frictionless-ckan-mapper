@@ -23,3 +23,8 @@ class TestPackageConversion:
         assert result['name'] == indict['name']
         assert result['title'] == indict['title']
         assert result['version'] == indict['version']
+
+    def test_name_is_lowercased(self):
+        indict = {'name': 'ThEnAmE'}
+        result = converter.package(indict)
+        assert result['name'] == indict['name'].lower()

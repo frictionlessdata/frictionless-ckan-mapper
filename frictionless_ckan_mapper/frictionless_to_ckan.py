@@ -68,4 +68,6 @@ class FrictionlessToCKAN:
         '''
         outdict = fddict
 
+        outdict['name'] = outdict['name'].lower()
+
         return outdict
