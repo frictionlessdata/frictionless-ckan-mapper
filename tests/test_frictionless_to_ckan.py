@@ -11,5 +11,15 @@ converter = frictionless_to_ckan.FrictionlessToCKAN()
 class TestResourceConversion:
     pass
 
+
 class TestPackageConversion:
-    pass
+    def test_name_title_and_version(self):
+        indict = {
+            'name': 'gdp',
+            'title': 'Countries GDP',
+            'version': '1.0',
+        }
+        result = converter.package(indict)
+        assert result['name'] == indict['name']
+        assert result['title'] == indict['title']
+        assert result['version'] == indict['version']

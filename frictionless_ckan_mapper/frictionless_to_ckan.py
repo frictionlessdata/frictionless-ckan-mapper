@@ -66,4 +66,6 @@ class FrictionlessToCKAN:
         2. Apply special formatting (if any) for key fields.
         3. Copy extras across inside the "extras" key.
         '''
-        pass
+        outdict = fddict
+
+        return outdict
