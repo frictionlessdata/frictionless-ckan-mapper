@@ -16,13 +16,14 @@ class TestResourceConversion:
         out = converter.resource(indict)
         exp = {
             'extras': [
-                {'key': 'title_cn', 'value': u'國內生產總值'},
-                {'key': 'years', 'value': '[2015, 2016]'},
                 {'key': 'last_year', 'value': 2016},
                 {'key': 'location', 'value': '{"country": "China"}'},
+                {'key': 'title_cn', 'value': u'國內生產總值'},
+                {'key': 'years', 'value': '[2015, 2016]'}
             ]
         }
-        assert out.get('extras') == exp.get('extras')
+        out['extras'] = sorted(out['extras'], key = lambda i: i['key'])
+        assert out['extras'] == exp['extras']
 
     def test_name_is_used_if_theres_no_title(self):
         indict = {'name': 'gdp'}
@@ -300,4 +301,5 @@ class TestPackageConversion:
             ]
         }
         out = converter.package(indict)
+        out['extras'] = sorted(out['extras'], key = lambda i: i['key'])
         assert out == exp
