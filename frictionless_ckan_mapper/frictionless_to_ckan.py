@@ -67,6 +67,10 @@ class FrictionlessToCKAN:
         '''
         outdict = dict(fddict)
 
-        outdict['name'] = outdict['name'].lower()
+        # Map data package keys
+        for k, v in self.package_mapping.items():
+            if k in fddict:
+                outdict[v] = fddict[k]
+                del outdict[k]
 
         return outdict

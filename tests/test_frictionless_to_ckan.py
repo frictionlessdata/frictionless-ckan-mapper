@@ -24,7 +24,9 @@ class TestPackageConversion:
         assert result['title'] == indict['title']
         assert result['version'] == indict['version']
 
-    def test_name_is_lowercased(self):
-        indict = {'name': 'ThEnAmE'}
+    def test_description_is_converted_to_notes(self):
+        indict = {
+            'description': 'Country, regional and world GDP in current USD.'
+        }
         result = converter.package(indict)
-        assert result['name'] == indict['name'].lower()
+        assert result.get('notes') == indict['description']
