@@ -34,6 +34,16 @@ class TestResourceConversion:
         out = converter.resource(indict)
         assert out.get('name') == indict['name']
 
+    def test_resource_title_is_used_as_name(self):
+        indict = {
+            'name': 'gdp',
+            'title': 'Gross domestic product',
+        }
+
+        out = converter.resource(indict)
+        assert out.get('name') == indict['title']
+
+
 
 class TestPackageConversion:
     def test_passthrough(self):

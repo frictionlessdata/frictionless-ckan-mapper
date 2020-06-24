@@ -68,6 +68,9 @@ class FrictionlessToCKAN:
                         {'key': key, 'value': value}
                 )
 
+        if outdict.get('title'):
+            outdict['name'] = outdict['title']
+
         return outdict
 
     def package(self, fddict):
