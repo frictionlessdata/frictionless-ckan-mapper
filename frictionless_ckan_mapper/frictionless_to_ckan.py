@@ -29,6 +29,7 @@ class FrictionlessToCKAN:
         "author_email",
         "groups",
         "license_id",
+        "license_title",
         "maintainer",
         "maintainer_email",
         "name",
@@ -44,6 +45,14 @@ class FrictionlessToCKAN:
         "type",
         "url",
         "version"
+    ]
+
+    frictionless_package_keys_to_exclude = [
+        'contributors',
+        'keywords',
+        'licenses',
+        'extras',
+        'sources'
     ]
 
     def resource(self, fddict):
@@ -146,5 +155,21 @@ class FrictionlessToCKAN:
                 for keyword in outdict['keywords']
             ]
             del outdict['keywords']
+
+        final_dict = dict(outdict)
+        for key, value in outdict.items():
+            if (
+                key not in self.ckan_package_keys and
+                key not in self.frictionless_package_keys_to_exclude
+            ):
+                if isinstance(value, (dict, list)):
+                    value = json.dumps(value)
+                if not final_dict.get('extras'):
+                    final_dict['extras'] = []
+                final_dict['extras'].append(
+                    {'key': key, 'value': value}
+                )
+                del final_dict[key]
+        outdict = dict(final_dict)
 
         return outdict

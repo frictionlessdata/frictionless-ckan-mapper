@@ -82,7 +82,6 @@ class TestResourceConversion:
         assert out['schema'] == indict['schema']
 
 
-
 class TestPackageConversion:
     def test_passthrough(self):
         indict = {
@@ -283,3 +282,27 @@ class TestPackageConversion:
             {'name': 'economy'},
             {'name': 'world-bank'},
         ]
+
+    def test_extras_is_converted(self):
+        indict = {
+            'homepage': 'www.example.com',
+            'newdict': {'key1': 'dict_to_jsonify'},
+            'newint': 123,
+            'newkey': 'new value',
+            'newlist': [1, 2, 3, 'string'],
+            'title': 'Title here'
+        }
+        exp = {
+            'title': 'Title here',
+            'url': 'www.example.com',
+            'extras': [
+                {
+                    'key': 'newdict', 'value': '{"key1": "dict_to_jsonify"}'
+                },
+                {'key': 'newint', 'value': 123},
+                {'key': 'newkey', 'value': 'new value'},
+                {'key': 'newlist', 'value': '[1, 2, 3, "string"]'},
+            ]
+        }
+        out = converter.package(indict)
+        assert out == exp
