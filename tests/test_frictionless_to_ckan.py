@@ -68,6 +68,20 @@ class TestResourceConversion:
         out = converter.resource(indict)
         assert out == indict
 
+    def test_schema(self):
+        schema = {
+            'fields': [
+                {'name': 'id', 'type': 'integer'},
+                {'name': 'title', 'type': 'string'},
+            ]
+        }
+        indict = {
+            'schema': schema
+        }
+        out = converter.resource(indict)
+        assert out['schema'] == indict['schema']
+
+
 
 class TestPackageConversion:
     def test_passthrough(self):
