@@ -17,13 +17,12 @@ class FrictionlessToCKAN:
     package_mapping = {
         'description': 'notes',
         'homepage': 'url',
-        'keywords': 'tags'
     }
 
     # Any key not in this list is passed as is inside "extras".
     # Further processing will happen for possible matchings, e.g.
     # contributor <=> author
-    CKAN_package_keys = [
+    ckan_package_keys = [
         "author",
         "author_email",
         "groups",
@@ -66,7 +65,7 @@ class FrictionlessToCKAN:
         2. Apply special formatting (if any) for key fields.
         3. Copy extras across inside the "extras" key.
         '''
-        outdict = fddict
+        outdict = dict(fddict)
 
         outdict['name'] = outdict['name'].lower()
 

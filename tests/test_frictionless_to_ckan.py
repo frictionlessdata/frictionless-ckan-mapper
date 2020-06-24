@@ -13,7 +13,7 @@ class TestResourceConversion:
 
 
 class TestPackageConversion:
-    def test_name_title_and_version(self):
+    def test_passthrough(self):
         indict = {
             'name': 'gdp',
             'title': 'Countries GDP',
