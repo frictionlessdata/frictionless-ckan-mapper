@@ -137,3 +137,69 @@ class TestPackageConversion:
         }
         assert out == exp
 
+    # TODO: get clear on the spelling of the key "organization".
+    # It's "organisation" in the JSON schema at
+    # https://specs.frictionlessdata.io/schemas/data-package.json
+    # while it's "organization" in the page of the specs at
+    # https://specs.frictionlessdata.io/data-package/#metadata
+    def test_contributors(self):
+        author_name = 'John Smith'
+        author_email = 'jsmith@email.com'
+        author_name2 = 'Johnny Smith'
+        author_email2 = 'jsmith2@email.com'
+        org_name = 'My Organization'
+        indict = {
+            'contributors': [
+                {'title': author_name}
+            ]
+        }
+        out = converter.package(indict)
+        assert out.get('maintainer') == author_name
+
+        # Make sure we store in "extras" if some keys don't have equivalent
+        # mappings in CKAN
+        indict = {
+            'contributors': [
+                {
+                    'title': author_name,
+                    'email': author_email,
+                    'path': 'file.csv',
+                    'organisation': org_name,
+                    'role': 'maintainer',
+                }
+            ]
+        }
+        exp = {
+            'extras': [{
+                'contributors': indict['contributors']
+            }],
+            'maintainer': author_name,
+            'maintainer_email': author_email
+        }
+        out = converter.package(indict)
+        assert out == exp
+
+        # Make sure that we also get the correct data when there are multiple
+        # contributors
+        indict = {
+            'contributors': [
+                {
+                    'title': author_name2,
+                    'email': author_email2,
+                },
+                {
+                    'title': author_name,
+                    'email': author_email,
+                    'path': 'file.csv'
+                }
+            ]
+        }
+        exp = {
+            'extras': [{
+                'contributors': indict['contributors']
+            }],
+            'maintainer': author_name2,
+            'maintainer_email': author_email2
+        }
+        out = converter.package(indict)
+        assert out == exp

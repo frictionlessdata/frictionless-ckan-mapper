@@ -95,4 +95,27 @@ class FrictionlessToCKAN:
                 outdict['extras'].append({'sources': outdict['sources']})
             del outdict['sources']
 
+        if outdict.get('contributors'):
+            outdict['maintainer'] = outdict['contributors'][0]['title']
+            if outdict['contributors'][0].get('email'):
+                outdict['maintainer_email'] = outdict['contributors'][0]['email']
+
+            # Add to "extras" if more than one contributor or if we have fields
+            # that can't be mapped directly
+            if len(outdict['contributors']) > 1:
+                if not outdict.get('extras'):
+                    outdict['extras'] = []
+                outdict['extras'].append({'contributors': outdict['contributors']})
+            else:
+                for key in outdict['contributors'][0].keys():
+                    if key in ['path', 'organisation', 'role']:
+                        if not outdict.get('extras'):
+                            outdict['extras'] = []
+                            outdict['extras'].append(
+                                {'contributors': outdict['contributors']}
+                            )
+                            break
+
+            del outdict['contributors']
+
         return outdict
