@@ -43,6 +43,21 @@ class TestResourceConversion:
         out = converter.resource(indict)
         assert out.get('name') == indict['title']
 
+    def test_path_to_url(self):
+        # Test remote path
+        indict = {'path': 'http://www.somewhere.com/data.csv'}
+        out = converter.resource(indict)
+        assert out['url'] == indict['path']
+
+        # Test local path
+        indict = {'path': './data.csv'}
+        out = converter.resource(indict)
+        assert out['url'] == indict['path']
+
+        # Test POSIX path
+        indict = {'path': '/home/user/data.csv'}
+        out = converter.resource(indict)
+        assert out['url'] == indict['path']
 
 
 class TestPackageConversion:

@@ -56,22 +56,28 @@ class FrictionlessToCKAN:
         3. Apply special formatting (if any) for key fields e.g. slugify.
         4. Map anything not in CKAN inside the "extras" key.
         '''
-        outdict = dict(fddict)
+        resource = dict(fddict)
 
-        if outdict.get('extras'):
-            extras = outdict['extras']
-            outdict['extras'] = []
+        # Remap differences from Frictionless to CKAN resource
+        for key, value in self.resource_mapping.items():
+            if key in resource:
+                resource[value] = resource[key]
+                del resource[key]
+
+        if resource.get('extras'):
+            extras = resource['extras']
+            resource['extras'] = []
             for key, value in extras.items():
                 if isinstance(value, (dict, list)):
                     value = json.dumps(value)
-                outdict['extras'].append(
-                        {'key': key, 'value': value}
+                resource['extras'].append(
+                    {'key': key, 'value': value}
                 )
 
-        if outdict.get('title'):
-            outdict['name'] = outdict['title']
+        if resource.get('title'):
+            resource['name'] = resource['title']
 
-        return outdict
+        return resource
 
     def package(self, fddict):
         '''Convert a Frictionless package to a CKAN package (dataset).
