@@ -73,4 +73,8 @@ class FrictionlessToCKAN:
                 outdict[v] = fddict[k]
                 del outdict[k]
 
+        if outdict.get('license'):
+            outdict['license_id'] = outdict['license']
+            del outdict['license']
+
         return outdict

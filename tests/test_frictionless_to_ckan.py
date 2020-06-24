@@ -30,3 +30,8 @@ class TestPackageConversion:
         }
         result = converter.package(indict)
         assert result.get('notes') == indict['description']
+
+    def test_license_as_string(self):
+        indict = {'license': 'cc-zero'}
+        result = converter.package(indict)
+        assert result.get('license_id') == 'cc-zero'
