@@ -29,6 +29,11 @@ class TestResourceConversion:
         }
         assert out.get('extras') == exp.get('extras')
 
+    def test_name_is_used_if_theres_no_title(self):
+        indict = {'name': 'gdp'}
+        out = converter.resource(indict)
+        assert out.get('name') == indict['name']
+
 
 class TestPackageConversion:
     def test_passthrough(self):
