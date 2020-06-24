@@ -59,6 +59,15 @@ class TestResourceConversion:
         out = converter.resource(indict)
         assert out['url'] == indict['path']
 
+    def test_passthrough(self):
+        indict = {
+            'description': 'GDPs list',
+            'format': 'CSV',
+            'hash': 'e785c0883d7a104330e69aee73d4f235'
+        }
+        out = converter.resource(indict)
+        assert out == indict
+
 
 class TestPackageConversion:
     def test_passthrough(self):
@@ -260,4 +269,3 @@ class TestPackageConversion:
             {'name': 'economy'},
             {'name': 'world-bank'},
         ]
-
