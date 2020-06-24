@@ -2,8 +2,6 @@
 
 import json
 
-import pytest
-
 import frictionless_ckan_mapper.ckan_to_frictionless as converter
 
 

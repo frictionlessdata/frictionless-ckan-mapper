@@ -37,9 +37,9 @@ def resource(ckandict):
     '''
     # TODO: delete keys last as may be needed for something in processing
     resource = dict(ckandict)
-    for k in resource_keys_to_remove:
-        if k in resource:
-            del resource[k]
+    for key in resource_keys_to_remove:
+        if key in resource:
+            del resource[key]
 
     # unjsonify values
     # * check if string
@@ -47,25 +47,25 @@ def resource(ckandict):
     # HACK: bit of a hacky way to check if value is a jsonified array or
     # dict
     # * else do nothing
-    for k, v in resource.items():
-        if isinstance(v, str):
-            v = v.strip()
-            if v.startswith('{') or v.startswith('['):
+    for key, value in resource.items():
+        if isinstance(value, str):
+            value = value.strip()
+            if value.startswith('{') or value.startswith('['):
                 try:
-                    v = json.loads(v)
-                    resource[k] = v
+                    value = json.loads(value)
+                    resource[key] = value
                 except (json_parse_exception, TypeError):
                     pass
 
     # Remap differences from CKAN to Frictionless resource
-    for k, v in resource_mapping.items():
-        if k in resource:
-            resource[v] = resource[k]
-            del resource[k]
+    for key, value in resource_mapping.items():
+        if key in resource:
+            resource[value] = resource[key]
+            del resource[key]
 
-    for k in list(resource.keys()):
-        if resource[k] is None:
-            del resource[k]
+    for key in list(resource.keys()):
+        if resource[key] is None:
+            del resource[key]
 
     # Reformat expected output for some keys in resource
     # resource['format'] = resource['format'].lower()
@@ -109,10 +109,10 @@ def dataset(ckandict):
         del outdict['extras']
 
     # Map dataset keys
-    for k, v in dataset_mapping.items():
-        if k in ckandict:
-            outdict[v] = ckandict[k]
-            del outdict[k]
+    for key, value in dataset_mapping.items():
+        if key in ckandict:
+            outdict[value] = ckandict[key]
+            del outdict[key]
 
     # tags
     if 'tags' in ckandict:
@@ -146,8 +146,8 @@ def dataset(ckandict):
                 contrib['email'] = outdict['maintainer_email']
             outdict['contributors'].append(contrib)
 
-    for k in ['author', 'author_email', 'maintainer', 'maintainer_email']:
-        outdict.pop(k, None)
+    for key in ['author', 'author_email', 'maintainer', 'maintainer_email']:
+        outdict.pop(key, None)
 
     # Reformat resources inside dataset
     if 'resources' in outdict:
@@ -166,11 +166,11 @@ def dataset(ckandict):
     outdict.pop('license_id', None)
     outdict.pop('license_title', None)
 
-    for k in dataset_keys_to_remove:
-        outdict.pop(k, None)
+    for key in dataset_keys_to_remove:
+        outdict.pop(key, None)
 
-    for k in list(outdict.keys()):
-        if outdict[k] is None:
-            del outdict[k]
+    for key in list(outdict.keys()):
+        if outdict[key] is None:
+            del outdict[key]
 
     return outdict

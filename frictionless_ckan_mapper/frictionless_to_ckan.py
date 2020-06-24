@@ -100,10 +100,10 @@ def package(fddict):
     outdict = dict(fddict)
 
     # Map data package keys
-    for k, v in package_mapping.items():
-        if k in fddict:
-            outdict[v] = fddict[k]
-            del outdict[k]
+    for key, value in package_mapping.items():
+        if key in fddict:
+            outdict[value] = fddict[key]
+            del outdict[key]
 
     if outdict.get('licenses'):
         outdict['license_id'] = outdict['licenses'][0]['type']
