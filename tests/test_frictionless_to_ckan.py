@@ -9,7 +9,25 @@ converter = frictionless_to_ckan.FrictionlessToCKAN()
 
 
 class TestResourceConversion:
-    pass
+    def test_extras(self):
+        indict = {
+            'extras': {
+                'title_cn': u'國內生產總值',
+                'years': [2015, 2016],
+                'last_year': 2016,
+                'location': {'country': 'China'}
+            }
+        }
+        out = converter.resource(indict)
+        exp = {
+            'extras': [
+                {'key': 'title_cn', 'value': u'國內生產總值'},
+                {'key': 'years', 'value': '[2015, 2016]'},
+                {'key': 'last_year', 'value': 2016},
+                {'key': 'location', 'value': '{"country": "China"}'},
+            ]
+        }
+        assert out.get('extras') == exp.get('extras')
 
 
 class TestPackageConversion:
