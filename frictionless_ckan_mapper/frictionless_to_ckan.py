@@ -25,33 +25,33 @@ class FrictionlessToCKAN:
     # Further processing will happen for possible matchings, e.g.
     # contributor <=> author
     ckan_package_keys = [
-        "author",
-        "author_email",
-        "groups",
-        "license_id",
-        "license_title",
-        "maintainer",
-        "maintainer_email",
-        "name",
-        "notes",
-        "owner_org",
-        "private",
-        "relationships_as_object",
-        "relationships_as_subject",
-        "resources",
-        "state",
-        "tags",
-        "title",
-        "type",
-        "url",
-        "version"
+        'author',
+        'author_email',
+        'groups',
+        'license_id',
+        'license_title',
+        'maintainer',
+        'maintainer_email',
+        'name',
+        'notes',
+        'owner_org',
+        'private',
+        'relationships_as_object',
+        'relationships_as_subject',
+        'resources',
+        'state',
+        'tags',
+        'title',
+        'type',
+        'url',
+        'version'
     ]
 
     frictionless_package_keys_to_exclude = [
         'contributors',
+        'extras',
         'keywords',
         'licenses',
-        'extras',
         'sources'
     ]
 
@@ -130,14 +130,17 @@ class FrictionlessToCKAN:
         if outdict.get('contributors'):
             outdict['maintainer'] = outdict['contributors'][0]['title']
             if outdict['contributors'][0].get('email'):
-                outdict['maintainer_email'] = outdict['contributors'][0]['email']
+                contributor = outdict['contributors'][0]
+                outdict['maintainer_email'] = contributor['email']
 
             # Add to "extras" if more than one contributor or if we have fields
             # that can't be mapped directly
             if len(outdict['contributors']) > 1:
                 if not outdict.get('extras'):
                     outdict['extras'] = []
-                outdict['extras'].append({'contributors': outdict['contributors']})
+                outdict['extras'].append(
+                    {'contributors': outdict['contributors']}
+                )
             else:
                 for key in outdict['contributors'][0].keys():
                     if key in ['path', 'organisation', 'role']:
