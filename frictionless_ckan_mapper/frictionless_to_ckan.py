@@ -1,5 +1,7 @@
 import json
 
+import slugify
+
 try:
     json_parse_exception = json.decoder.JSONDecodeError
 except AttributeError:  # Testing against Python 2
@@ -115,7 +117,13 @@ class FrictionlessToCKAN:
                                 {'contributors': outdict['contributors']}
                             )
                             break
-
             del outdict['contributors']
+
+        if outdict.get('keywords'):
+            outdict['tags'] = [
+                {'name': slugify.slugify(keyword).lower()}
+                for keyword in outdict['keywords']
+            ]
+            del outdict['keywords']
 
         return outdict

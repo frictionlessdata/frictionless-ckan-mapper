@@ -203,3 +203,13 @@ class TestPackageConversion:
         }
         out = converter.package(indict)
         assert out == exp
+
+    def test_keywords_converted_to_tags(self):
+        keywords = ['economy!!!', 'World Bank']
+        indict = {'keywords': keywords}
+        out = converter.package(indict)
+        assert out.get('tags') == [
+            {'name': 'economy'},
+            {'name': 'world-bank'},
+        ]
+
