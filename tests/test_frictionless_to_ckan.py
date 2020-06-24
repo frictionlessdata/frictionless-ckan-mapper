@@ -19,17 +19,17 @@ class TestPackageConversion:
             'title': 'Countries GDP',
             'version': '1.0',
         }
-        result = converter.package(indict)
-        assert result['name'] == indict['name']
-        assert result['title'] == indict['title']
-        assert result['version'] == indict['version']
+        out = converter.package(indict)
+        assert out['name'] == indict['name']
+        assert out['title'] == indict['title']
+        assert out['version'] == indict['version']
 
     def test_description_is_converted_to_notes(self):
         indict = {
             'description': 'Country, regional and world GDP in current USD.'
         }
-        result = converter.package(indict)
-        assert result.get('notes') == indict['description']
+        out = converter.package(indict)
+        assert out.get('notes') == indict['description']
 
     # TODO: make sure that we deal with the 'path' property too
     # coming from Frictionless. The 'type' property is not expected
