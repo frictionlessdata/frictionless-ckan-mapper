@@ -84,3 +84,56 @@ class TestPackageConversion:
         }
         out = converter.package(indict)
         assert out == exp
+
+    def test_sources(self):
+        indict = {
+            'sources': [
+                {
+                    'title': 'World Bank and OECD'
+                }
+            ]
+        }
+        out = converter.package(indict)
+        assert out.get('author') == indict['sources'][0]['title']
+        indict = {
+            'sources': [
+                {
+                    'email': 'data@worldbank.org',
+                    'path': 'http://data.worldbank.org/indicator/NY.GDP.MKTP.CD',
+                    'title': 'World Bank and OECD'
+                }
+            ]
+        }
+        out = converter.package(indict)
+        assert out.get('author') == indict['sources'][0]['title']
+        assert out.get('author_email') == indict['sources'][0]['email']
+        assert out.get('url') == indict['sources'][0]['path']
+
+        # Make sure that multiple sources are stored in "extras".
+        # Ensure that the properties `author`, `author_email` and `url` are
+        # still set to the data found in the first source.
+        indict = {
+            'sources': [
+                {
+                    'email': 'data@worldbank.org',
+                    'path': 'http://data.worldbank.org/indicator/NY.GDP.MKTP.CD',
+                    'title': 'World Bank and OECD'
+                },
+                {
+                    'email': 'data2@worldbank2.org',
+                    'path': 'http://data2.worldbank2.org/indicator/NY.GDP.MKTP.CD',
+                    'title': 'World Bank 2 and OECD'
+                }
+            ]
+        }
+        out = converter.package(indict)
+        exp = {
+            'extras': [{
+                'sources': indict['sources']
+            }],
+            'author': 'World Bank and OECD',
+            'author_email': 'data@worldbank.org',
+            'url': 'http://data.worldbank.org/indicator/NY.GDP.MKTP.CD'
+        }
+        assert out == exp
+

@@ -83,4 +83,16 @@ class FrictionlessToCKAN:
                 outdict['extras'].append({'licenses': outdict['licenses']})
             del outdict['licenses']
 
+        if outdict.get('sources'):
+            outdict['author'] = outdict['sources'][0]['title']
+            if outdict['sources'][0].get('email'):
+                outdict['author_email'] = outdict['sources'][0]['email']
+            if outdict['sources'][0].get('path'):
+                outdict['url'] = outdict['sources'][0]['path']
+            if len(outdict.get('sources')) > 1:
+                if not outdict.get('extras'):
+                    outdict['extras'] = []
+                outdict['extras'].append({'sources': outdict['sources']})
+            del outdict['sources']
+
         return outdict
