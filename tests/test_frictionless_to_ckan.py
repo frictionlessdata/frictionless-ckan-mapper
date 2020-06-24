@@ -2,10 +2,7 @@
 
 import pytest
 
-import frictionless_ckan_mapper.frictionless_to_ckan as frictionless_to_ckan
-
-
-converter = frictionless_to_ckan.FrictionlessToCKAN()
+import frictionless_ckan_mapper.frictionless_to_ckan as converter
 
 
 class TestResourceConversion:

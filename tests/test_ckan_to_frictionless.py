@@ -4,10 +4,7 @@ import json
 
 import pytest
 
-import frictionless_ckan_mapper.ckan_to_frictionless as ckan_to_frictionless
-
-
-converter = ckan_to_frictionless.CKANToFrictionless()
+import frictionless_ckan_mapper.ckan_to_frictionless as converter
 
 
 class TestResourceConversion:
@@ -22,7 +19,6 @@ class TestResourceConversion:
     def test_fixtures(self):
         inpath = 'tests/fixtures/ckan_resource.json'
         exppath = 'tests/fixtures/frictionless_resource.json'
-        converter = ckan_to_frictionless.CKANToFrictionless()
         indict = json.load(open(inpath))
         exp = json.load(open(exppath))
         out = converter.resource(indict)
@@ -32,7 +28,7 @@ class TestResourceConversion:
         '''Test values which are jsonified dict or arrays are unjsonified'''
         schema = {
             "fields": [
-                { "name": "abc", "type": "string" }
+                {"name": "abc", "type": "string"}
             ]
         }
         indict = {
@@ -52,7 +48,7 @@ class TestResourceConversion:
         indict = {
             "x": "hello world",
             "y": "1.3"
-            }
+        }
         exp = {
             "x": "hello world",
             "y": "1.3"
