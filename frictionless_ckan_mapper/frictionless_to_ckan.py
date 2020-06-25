@@ -103,7 +103,9 @@ def package(fddict):
                 break
 
     if outdict.get('keywords'):
-        outdict['tags'] = [ {'name': keyword} for keyword in outdict['keywords'] ]
+        outdict['tags'] = [
+            {'name': keyword} for keyword in outdict['keywords']
+        ]
         del outdict['keywords']
 
     final_dict = dict(outdict)
