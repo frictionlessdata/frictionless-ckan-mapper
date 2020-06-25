@@ -46,11 +46,8 @@ ckan_package_keys = [
 ]
 
 frictionless_package_keys_to_exclude = [
-    'contributors',
     'extras',
-    'keywords',
-    'licenses',
-    'sources'
+    'keywords'
 ]
 
 
@@ -90,52 +87,22 @@ def package(fddict):
             outdict[value] = fddict[key]
             del outdict[key]
 
-    if outdict.get('licenses'):
-        outdict['license_id'] = outdict['licenses'][0]['type']
-        if outdict['licenses'][0].get('title'):
-            outdict['license_title'] = outdict['licenses'][0]['title']
-        if len(outdict.get('licenses')) > 1:
-            if not outdict.get('extras'):
-                outdict['extras'] = []
-            outdict['extras'].append({'licenses': outdict['licenses']})
-        del outdict['licenses']
-
-    if outdict.get('sources'):
-        outdict['author'] = outdict['sources'][0]['title']
-        if outdict['sources'][0].get('email'):
-            outdict['author_email'] = outdict['sources'][0]['email']
-        if outdict['sources'][0].get('path'):
-            outdict['url'] = outdict['sources'][0]['path']
-        if len(outdict.get('sources')) > 1:
-            if not outdict.get('extras'):
-                outdict['extras'] = []
-            outdict['extras'].append({'sources': outdict['sources']})
-        del outdict['sources']
+    if 'licenses' in outdict and outdict['licenses']:
+        outdict['license_id'] = outdict['licenses'][0].get('name')
+        outdict['license_title'] = outdict['licenses'][0].get('title')
 
     if outdict.get('contributors'):
-        outdict['maintainer'] = outdict['contributors'][0]['title']
-        if outdict['contributors'][0].get('email'):
-            contributor = outdict['contributors'][0]
-            outdict['maintainer_email'] = contributor['email']
+        for c in outdict['contributors']:
+            if c.get('role') in [None, 'author']:
+                outdict['author'] = c.get('title')
+                outdict['author_email'] = c.get('email')
+                break
 
-        # Add to "extras" if more than one contributor or if we have fields
-        # that can't be mapped directly
-        if len(outdict['contributors']) > 1:
-            if not outdict.get('extras'):
-                outdict['extras'] = []
-            outdict['extras'].append(
-                {'contributors': outdict['contributors']}
-            )
-        else:
-            for key in outdict['contributors'][0].keys():
-                if key in ['path', 'organisation', 'role']:
-                    if not outdict.get('extras'):
-                        outdict['extras'] = []
-                        outdict['extras'].append(
-                            {'contributors': outdict['contributors']}
-                        )
-                        break
-        del outdict['contributors']
+        for c in outdict['contributors']:
+            if c.get('role') == 'maintainer':
+                outdict['maintainer'] = c.get('title')
+                outdict['maintainer_email'] = c.get('email')
+                break
 
     if outdict.get('keywords'):
         outdict['tags'] = [
