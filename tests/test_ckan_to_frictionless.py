@@ -204,7 +204,7 @@ class TestPackageConversion:
         }
         exp = {
             'licenses': [{
-                'type': 'odc-odbl'
+                'name': 'odc-odbl'
             }]
         }
         out = converter.dataset(indict)
@@ -216,7 +216,7 @@ class TestPackageConversion:
         }
         exp = {
             'licenses': [{
-                'type': 'odc-odbl',
+                'name': 'odc-odbl',
                 'title': 'Open Data Commons Open Database License'
             }]
         }
@@ -226,13 +226,13 @@ class TestPackageConversion:
         # finally what if license*s* already there ...
         indict = {
             'licenses': [{
-                'type': 'odc-pddl'
+                'name': 'odc-pddl'
             }],
             'license_id': 'odc-odbl'
         }
         exp = {
             'licenses': [{
-                'type': 'odc-pddl'
+                'name': 'odc-pddl'
             }]
         }
         out = converter.dataset(indict)
@@ -247,7 +247,7 @@ class TestPackageConversion:
         }
         exp = {
             'licenses': [{
-                'type': 'odc-odbl',
+                'name': 'odc-odbl',
             }]
         }
         out = converter.dataset(indict)

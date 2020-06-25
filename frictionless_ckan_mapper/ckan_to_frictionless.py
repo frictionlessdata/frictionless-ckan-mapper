@@ -159,7 +159,7 @@ def dataset(ckandict):
     # license_id?
     if ('licenses' not in outdict and 'license_id' in outdict):
         outdict['licenses'] = [{
-            'type': outdict['license_id'],
+            'name': outdict['license_id'],
         }]
         if 'license_title' in outdict:
             outdict['licenses'][0]['title'] = outdict['license_title']
