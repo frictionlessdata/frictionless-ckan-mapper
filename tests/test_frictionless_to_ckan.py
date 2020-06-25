@@ -223,8 +223,8 @@ class TestPackageConversion:
         indict = {'keywords': keywords}
         out = converter.package(indict)
         assert out.get('tags') == [
-            {'name': 'economy'},
-            {'name': 'world-bank'},
+            {'name': 'economy!!!'},
+            {'name': 'World Bank'},
         ]
 
     def test_extras_is_converted(self):

@@ -1,7 +1,5 @@
 import json
 
-import slugify
-
 try:
     json_parse_exception = json.decoder.JSONDecodeError
 except AttributeError:  # Testing against Python 2
@@ -105,10 +103,7 @@ def package(fddict):
                 break
 
     if outdict.get('keywords'):
-        outdict['tags'] = [
-            {'name': slugify.slugify(keyword).lower()}
-            for keyword in outdict['keywords']
-        ]
+        outdict['tags'] = [ {'name': keyword} for keyword in outdict['keywords'] ]
         del outdict['keywords']
 
     final_dict = dict(outdict)

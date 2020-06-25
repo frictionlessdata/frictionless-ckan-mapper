@@ -110,36 +110,6 @@ class TestResourceConversion:
         out = converter.resource(indict)
         assert out == exp
 
-    # TODO: remove sluggification (if needed make it part of strict mode)
-    def test_resource_name_slugifies_the_name(self):
-        indict = {
-            'name': 'ThE-nAmE'
-        }
-        exp = {
-            'name': 'the-name'
-        }
-        out = converter.resource(indict)
-        assert out == exp
-
-        indict = {
-            'name': 'Lista de PIBs dos países!   51'
-        }
-        exp = {
-            'name': 'lista-de-pibs-dos-paises-51'
-        }
-        out = converter.resource(indict)
-        assert out == exp
-
-    def test_resource_name_converts_unicode_characters(self):
-        indict = {
-            'name': u'万事开头难'
-        }
-        exp = {
-            'name': 'mo-shi-kai-tou-nan'
-        }
-        out = converter.resource(indict)
-        assert out == exp
-
     def test_nulls_are_stripped(self):
         indict = {
             'abc': 'xxx',

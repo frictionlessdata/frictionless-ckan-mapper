@@ -1,7 +1,5 @@
 import json
 
-import slugify
-
 try:
     json_parse_exception = json.decoder.JSONDecodeError
 except AttributeError:  # Testing against Python 2
@@ -66,11 +64,6 @@ def resource(ckandict):
     for key in list(resource.keys()):
         if resource[key] is None:
             del resource[key]
-
-    # Reformat expected output for some keys in resource
-    # resource['format'] = resource['format'].lower()
-    if 'name' in resource:
-        resource['name'] = slugify.slugify(resource['name']).lower()
 
     return resource
 
