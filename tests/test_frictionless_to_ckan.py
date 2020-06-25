@@ -4,40 +4,21 @@ import frictionless_ckan_mapper.frictionless_to_ckan as converter
 
 
 class TestResourceConversion:
-    def test_extras(self):
+    def test_non_ckan_keys_passthrough(self):
         indict = {
-            'extras': {
-                'title_cn': u'國內生產總值',
-                'years': [2015, 2016],
-                'last_year': 2016,
-                'location': {'country': 'China'}
-            }
+            'title_cn': u'國內生產總值',
+            'years': [2015, 2016],
+            'last_year': 2016,
+            'location': {'country': 'China'}
         }
         out = converter.resource(indict)
         exp = {
-            'extras': [
-                {'key': 'last_year', 'value': 2016},
-                {'key': 'location', 'value': '{"country": "China"}'},
-                {'key': 'title_cn', 'value': u'國內生產總值'},
-                {'key': 'years', 'value': '[2015, 2016]'}
-            ]
+            'title_cn': u'國內生產總值',
+            'years': [2015, 2016],
+            'last_year': 2016,
+            'location': {'country': 'China'}
         }
-        out['extras'] = sorted(out['extras'], key = lambda i: i['key'])
-        assert out['extras'] == exp['extras']
-
-    def test_name_is_used_if_theres_no_title(self):
-        indict = {'name': 'gdp'}
-        out = converter.resource(indict)
-        assert out.get('name') == indict['name']
-
-    def test_resource_title_is_used_as_name(self):
-        indict = {
-            'name': 'gdp',
-            'title': 'Gross domestic product',
-        }
-
-        out = converter.resource(indict)
-        assert out.get('name') == indict['title']
+        assert out == exp
 
     def test_path_to_url(self):
         # Test remote path
@@ -55,6 +36,18 @@ class TestResourceConversion:
         out = converter.resource(indict)
         assert out['url'] == indict['path']
 
+    def test_other_remapping(self):
+        indict = {
+            'bytes': 10,
+            'mediatype': 'text/csv'
+        }
+        exp = {
+            'size': 10,
+            'mimetype': 'text/csv'
+        }
+        out = converter.resource(indict)
+        assert out == exp
+
     def test_passthrough(self):
         indict = {
             'description': 'GDPs list',
@@ -63,19 +56,6 @@ class TestResourceConversion:
         }
         out = converter.resource(indict)
         assert out == indict
-
-    def test_schema(self):
-        schema = {
-            'fields': [
-                {'name': 'id', 'type': 'integer'},
-                {'name': 'title', 'type': 'string'},
-            ]
-        }
-        indict = {
-            'schema': schema
-        }
-        out = converter.resource(indict)
-        assert out['schema'] == indict['schema']
 
 
 class TestPackageConversion:

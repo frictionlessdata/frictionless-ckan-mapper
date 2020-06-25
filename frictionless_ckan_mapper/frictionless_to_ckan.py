@@ -59,10 +59,8 @@ def resource(fddict):
 
     # TODO: (the following is inaccurate)
 
-    1. Convert extras: "dict" to "list of dict".
-    2. Map keys from Frictionless to CKAN (and reformat if needed).
-    3. Apply special formatting (if any) for key fields e.g. slugify.
-    4. Map anything not in CKAN inside the "extras" key.
+    1. Map keys from Frictionless to CKAN (and reformat if needed).
+    2. Apply special formatting (if any) for key fields e.g. slugify.
     '''
     resource = dict(fddict)
 
@@ -71,19 +69,6 @@ def resource(fddict):
         if key in resource:
             resource[value] = resource[key]
             del resource[key]
-
-    if resource.get('extras'):
-        extras = resource['extras']
-        resource['extras'] = []
-        for key, value in extras.items():
-            if isinstance(value, (dict, list)):
-                value = json.dumps(value)
-            resource['extras'].append(
-                {'key': key, 'value': value}
-            )
-
-    if resource.get('title'):
-        resource['name'] = resource['title']
 
     return resource
 
