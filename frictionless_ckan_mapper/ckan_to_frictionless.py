@@ -147,52 +147,26 @@ def dataset(ckandict):
         outdict['resources'] = [resource(res) for res in
                                 outdict['resources']]
 
-    # package_show can have license_id and license_title
-    # TODO: do we always license_id i.e. can we have license_title w/o
-    # license_id?
-    # There's no mention in the docs of license_title nor license_url, plus
-    # license_id is listed as optional in both CKAN 2.8 and 2.9.
 
-    # Looping like this because all those keys are optional.
+    # Algorithm for licenses
+    # 1. Use extras first
+    # 2. Updating first item in licenses array (if already there - or create it as empty) with stuff at root of ckan dict i.e. values from license_id, license_title etc.
+
+    # Looping like this because all those keys are optional according to the
+    # docs (though usually license_id will be there if others are there).
     for key in ['license_id', 'license_title', 'license_url']:
-        if key in outdict:
+        if key in outdict and 'licenses' not in outdict:
             outdict['licenses'] = [{}]
             break  # check to create list of dicts only once
     if 'license_id' in outdict:
         outdict['licenses'][0]['name'] = outdict['license_id']
+        outdict.pop('license_id', None)
     if 'license_title' in outdict:
         outdict['licenses'][0]['title'] = outdict['license_title']
+        outdict.pop('license_title', None)
     if 'license_url' in outdict:
         outdict['licenses'][0]['path'] = outdict['license_url']
-    outdict.pop('license_id', None)
-    outdict.pop('license_title', None)
-    outdict.pop('license_url', None)
-
-    # Check `ckandict` instead of `outdict` because outdict['extras']
-    # was deleted earlier
-    licenses_there = False  # First assume we won't find licenses
-    if ckandict.get('extras'):
-        for item in ckandict['extras']:  # this is a list
-            if not licenses_there:
-                for value in item.values():  # dicts inside list
-                    # dict containing {'key': 'licenses', 'value': '...'}
-                    if value == 'licenses':
-                        licenses_there = True
-                        licenses_dict = dict(item).get('value')  # dict as str
-                        licenses_dict = json.loads(licenses_dict)  # get dict
-                        licenses_list = licenses_dict.get('licenses')  # list
-                        break
-        if licenses_there:
-            for license in licenses_list:  # list of dicts
-                license_out = {}  # won't be empty, create it now to be filled
-                if 'name' in license:
-                    license_out['name'] = license['name']
-                if 'title' in license:
-                    license_out['title'] = license['title']
-                if 'path' in license:
-                    license_out['path'] = license['path']
-                if license_out not in outdict['licenses']:  # avoid duplicates
-                    outdict['licenses'].append(license_out)
+        outdict.pop('license_url', None)
 
     for key in dataset_keys_to_remove:
         outdict.pop(key, None)

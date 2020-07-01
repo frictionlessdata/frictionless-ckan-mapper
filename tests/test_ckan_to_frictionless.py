@@ -198,8 +198,6 @@ class TestPackageConversion:
         assert out == exp
 
     def test_dataset_license_with_licenses_in_extras(self):
-        # If CKAN 'extras' contain a list of 'licenses', it must come
-        # from Frictionless.
         indict = {
             'license_id': 'odc-odbl',
             'license_title': 'Open Data Commons Open Database License',
@@ -208,42 +206,34 @@ class TestPackageConversion:
                 {
                     'key': 'licenses',
                     'value': json.dumps(
-                        {
-                            'licenses': [
-                                {
-                                    'name': 'cc-by',
-                                    'title': 'Creative Commons Attribution',
-                                    'path': 'http://www.opendefinition.org/licenses/cc-by'
-                                },
-                                {
-                                    'name': 'odc-odbl',
-                                    'title': 'Open Data Commons Open Database License',
-                                    'path': 'https://opendatacommons.org/licenses/odbl/1-0/index.html'
-                                }
-                            ]
-                        }
+                        [
+                            {
+                                'name': 'cc-by',
+                                'title': 'Creative Commons Attribution',
+                                'path': 'http://www.opendefinition.org/licenses/cc-by'
+                            },
+                            {
+                                'name': 'odc-by',
+                                'title': 'Open Data Commons Attribution License',
+                                'path': 'https://opendatacommons.org/licenses/by/1-0/index.html'
+                            }
+                        ]
                     )
                 }
             ]
         }
-        # Not expecting duplicates in the output. Take the first license
-        # found and use it first in the list, preserving order (here,
-        # it comes from the root with `license_id`, `license_title` and
-        # `license_url`, not from inside "extras"). If it appears again
-        # in the extras (dicts are equal), don't add it again.
-        # Otherwise, we would have the license 'odc-odbl' twice in this case
         exp = {
             'licenses': [
                 {
                     'name': 'odc-odbl',
                     'title': 'Open Data Commons Open Database License',
-                    'path': 'https://opendatacommons.org/licenses/odbl/1-0/index.html'},
-
-                {
-                    'name': 'cc-by',
-                    'title': 'Creative Commons Attribution',
-                    'path': 'http://www.opendefinition.org/licenses/cc-by'
+                    'path': 'https://opendatacommons.org/licenses/odbl/1-0/index.html'
                 },
+                {
+                    'name': 'odc-by',
+                    'title': 'Open Data Commons Attribution License',
+                    'path': 'https://opendatacommons.org/licenses/by/1-0/index.html'
+                }
             ]
         }
         out = converter.dataset(indict)
