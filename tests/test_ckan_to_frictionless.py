@@ -2,7 +2,9 @@
 
 import json
 
-import frictionless_ckan_mapper.ckan_to_frictionless as converter
+import frictionless_ckan_mapper.ckan_to_frictionless as convert_c2f
+
+import frictionless_ckan_mapper.frictionless_to_ckan as convert_f2c
 
 
 class TestResourceConversion:
@@ -15,11 +17,12 @@ class TestResourceConversion:
     '''
 
     def test_fixtures(self):
+        # Test simple conversion
         inpath = 'tests/fixtures/ckan_resource.json'
         exppath = 'tests/fixtures/frictionless_resource.json'
         indict = json.load(open(inpath))
         exp = json.load(open(exppath))
-        out = converter.resource(indict)
+        out = convert_c2f.resource(indict)
         assert out == exp
 
     def test_values_are_unjsonified(self):
@@ -40,7 +43,7 @@ class TestResourceConversion:
             # fake json object - not really ... but looks like it ...
             "x": "{'abc': 1"
         }
-        out = converter.resource(indict)
+        out = convert_c2f.resource(indict)
         assert out == exp
 
         indict = {
@@ -51,7 +54,7 @@ class TestResourceConversion:
             "x": "hello world",
             "y": "1.3"
         }
-        out = converter.resource(indict)
+        out = convert_c2f.resource(indict)
         assert out == exp
 
     def test_keys_are_removed_that_should_be(self):
@@ -62,7 +65,7 @@ class TestResourceConversion:
             "state": "active"
         }
         exp = {}
-        out = converter.resource(indict)
+        out = convert_c2f.resource(indict)
         assert out == exp
 
     def test_resource_mapping(self):
@@ -76,7 +79,7 @@ class TestResourceConversion:
             "bytes": 110,
             "mediatype": "text/csv"
         }
-        out = converter.resource(indict)
+        out = convert_c2f.resource(indict)
         assert out == exp
 
     def test_resource_path_is_set_even_for_uploaded_resources(self):
@@ -88,7 +91,7 @@ class TestResourceConversion:
             'path': 'http://www.somewhere.com/data.csv',
             'url_type': "upload"
         }
-        out = converter.resource(indict)
+        out = convert_c2f.resource(indict)
         assert out == exp
 
     def test_resource_keys_pass_through(self):
@@ -107,7 +110,7 @@ class TestResourceConversion:
             '1dafak': 'abbbb'
         }
         exp = indict
-        out = converter.resource(indict)
+        out = convert_c2f.resource(indict)
         assert out == exp
 
     def test_nulls_are_stripped(self):
@@ -119,7 +122,7 @@ class TestResourceConversion:
         exp = {
             'abc': 'xxx'
         }
-        out = converter.resource(indict)
+        out = convert_c2f.resource(indict)
         assert out == exp
 
 
@@ -139,7 +142,7 @@ class TestPackageConversion:
             'last_year': 2016,
             'location': {'country': 'China'}
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
 
     def test_unjsonify_all_extra_values(self):
@@ -156,7 +159,7 @@ class TestPackageConversion:
                 }
             ]
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         exp = {
             "location": {
                 "country":
@@ -178,7 +181,7 @@ class TestPackageConversion:
                 'name': 'odc-odbl',
             }]
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
 
         # Remap everything in licenses
@@ -194,7 +197,7 @@ class TestPackageConversion:
                 'path': 'http://www.opendefinition.org/licenses/cc-by'
             }]
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
 
     def test_dataset_license_with_licenses_in_extras(self):
@@ -236,7 +239,7 @@ class TestPackageConversion:
                 }
             ]
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
 
     def test_keys_are_passed_through(self):
@@ -247,7 +250,7 @@ class TestPackageConversion:
             # random
             'xxx': 'aldka'
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         exp = {
             'name': 'gdp',
             'title': 'Countries GDP',
@@ -266,7 +269,7 @@ class TestPackageConversion:
             'description': 'Country, regional and world GDP',
             'homepage': 'https://datopian.com'
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
 
     def test_dataset_author_and_maintainer(self):
@@ -283,7 +286,7 @@ class TestPackageConversion:
                 }
             ]
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
 
         indict = {
@@ -307,7 +310,7 @@ class TestPackageConversion:
 
             ]
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
 
         # if we already have contributors use that ...
@@ -322,7 +325,7 @@ class TestPackageConversion:
                 'title': 'Datopians'
             }]
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
 
     def test_dataset_tags(self):
@@ -345,7 +348,7 @@ class TestPackageConversion:
         exp = {
             'keywords': ['economy', 'worldbank']
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
 
     def test_resources_are_converted(self):
@@ -370,11 +373,11 @@ class TestPackageConversion:
             'title': 'Countries GDP',
             'resources': [resource_1]
         }
-        out = converter.dataset(indict_2_resources)
+        out = convert_c2f.dataset(indict_2_resources)
         assert len(out['resources']) == 2
 
         # Package has a single resource
-        out = converter.dataset(indict_1_resource)
+        out = convert_c2f.dataset(indict_1_resource)
         assert len(out['resources']) == 1
 
     def test_all_keys_are_passed_through(self):
@@ -391,7 +394,7 @@ class TestPackageConversion:
             '1dafak': 'abbbb'
         }
         exp = indict
-        out = converter.resource(indict)
+        out = convert_c2f.resource(indict)
         assert out == exp
 
     def test_keys_are_removed_that_should_be(self):
@@ -400,7 +403,7 @@ class TestPackageConversion:
         }
         exp = {
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
 
     def test_null_values_are_stripped(self):
@@ -413,5 +416,15 @@ class TestPackageConversion:
             'id': '12312',
             'title': 'title here'
         }
-        out = converter.dataset(indict)
+        out = convert_c2f.dataset(indict)
         assert out == exp
+
+    def test_round_trip_ckan(self):
+        # `ckan1` != `ckan2` but `ckan2` == `ckan3`
+        inpath = 'tests/fixtures/full_ckan_package.json'
+        ckan1 = json.load(open(inpath))
+        fd1 = convert_c2f.dataset(ckan1)
+        ckan2 = convert_f2c.package(fd1)
+        fd2 = convert_c2f.dataset(ckan2)
+        ckan3 = convert_f2c.package(fd2)
+        assert ckan2 == ckan3
