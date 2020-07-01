@@ -147,10 +147,11 @@ def dataset(ckandict):
         outdict['resources'] = [resource(res) for res in
                                 outdict['resources']]
 
-
     # Algorithm for licenses
     # 1. Use extras first
-    # 2. Updating first item in licenses array (if already there - or create it as empty) with stuff at root of ckan dict i.e. values from license_id, license_title etc.
+    # 2. Updating first item in licenses array (if already there -
+    # or create it as empty) with stuff at root of ckan dict i.e.
+    # values from license_id, license_title etc.
 
     # Looping like this because all those keys are optional according to the
     # docs (though usually license_id will be there if others are there).
