@@ -428,3 +428,26 @@ class TestPackageConversion:
         fd2 = convert_c2f.dataset(ckan2)
         ckan3 = convert_f2c.package(fd2)
         assert ckan2 == ckan3
+
+    def test_differences_ckan_round_trip(self):
+        # When converting ckan1 to fd1 then fd1 to ckan2,
+        # ckan1 is bound to differ from ckan2.
+        # Those fixtures illustrate the expected differences.
+        inpath = 'tests/fixtures/full_ckan_package.json'
+        ckan1 = json.load(open(inpath))
+        fd1 = convert_c2f.dataset(ckan1)
+        ckan2 = convert_f2c.package(fd1)
+        inpath_round_trip = ('tests/fixtures/'
+                             'full_ckan_package_first_round_trip.json')
+        exp = json.load(open(inpath_round_trip))
+
+        # Notable differences in `exp` from ckan1 are:
+        # - Keys not defined in a standard CKAN package such as
+        #  `creator_user_id` will go to `extras`.
+        # - In our `full_ckan_package.json` fixture, 'extras' is empty but
+        #   Frictionless fills it and it will exist in the CKAN package after
+        #   the first round trip.
+        # - Keys defined in CKAN but ignored in Frictionless, such as `id`
+        #   (because a Frictionless package doesn't have an id property) will
+        #   also go to 'extras'.
+        assert ckan2 == exp

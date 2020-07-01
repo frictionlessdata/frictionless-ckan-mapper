@@ -1,0 +1,63 @@
+{
+  "author": "Author Name",
+  "author_email": "",
+  "license_id": "cc-by",
+  "license_title": "Creative Commons Attribution",
+  "license_url": "http://www.opendefinition.org/licenses/cc-by",
+  "groups": [],
+  "name": "testing",
+  "notes": "Test new description for version 1.2",
+  "owner_org": "5df7636c-a47f-4ab8-b6f0-3212280da926",
+  "private": false,
+  "relationships_as_object": [],
+  "relationships_as_subject": [],
+  "resources": [
+    {
+      "created": "2020-06-25T14:33:49.587300",
+      "description": "",
+      "format": "CSV",
+      "hash": "",
+      "id": "e778ca29-5fb7-4063-ad9b-68040f88ab8a",
+      "last_modified": "2020-06-25T14:33:49.567891",
+      "name": "mini-csv.csv",
+      "revision_id": "175298da-691c-42c8-9a4a-b01350fad6e9",
+      "tracking_summary": { "recent": 0, "total": 0 },
+      "url_type": "upload",
+      "versions_upload_timestamp": "2020-06-25T11:33:49.567522",
+      "bytes": 40,
+      "mediatype": "text/csv",
+      "path": "http://localhost:5000/dataset/1f7db1f1-1400-4572-a860-0977326a5521/resource/e778ca29-5fb7-4063-ad9b-68040f88ab8a/download/mini-csv.csv"
+    }
+  ],
+  "title": "Testing",
+  "type": "dataset",
+  "version": "",
+  "url": "",
+  "keywords": [],
+  "extras": [
+    {
+      "key": "creator_user_id",
+      "value": "c6bd4f0b-f550-4f5d-9537-782a2d1d4c7a"
+    },
+    { "key": "id", "value": "1f7db1f1-1400-4572-a860-0977326a5521" },
+    { "key": "isopen", "value": true },
+    { "key": "metadata_created", "value": "2020-06-25T14:33:18.301040" },
+    { "key": "metadata_modified", "value": "2020-06-25T14:50:34.860070" },
+    { "key": "num_resources", "value": 1 },
+    { "key": "num_tags", "value": 0 },
+    {
+      "key": "organization",
+      "value": "{\"approval_status\": \"approved\", \"created\": \"2020-06-25T11:31:03.384316\", \"description\": \"\", \"id\": \"5df7636c-a47f-4ab8-b6f0-3212280da926\", \"image_url\": \"\", \"is_organization\": true, \"name\": \"odc\", \"revision_id\": \"f0b87003-e385-48c6-b4b6-5fe725cbee8e\", \"state\": \"active\", \"title\": \"ODC\", \"type\": \"organization\"}"
+    },
+    { "key": "revision_id", "value": "41109a92-138b-4a90-be7b-7f202ad83492" },
+    { "key": "tracking_summary", "value": "{\"recent\": 0, \"total\": 0}" },
+    {
+      "key": "contributors",
+      "value": "[{\"title\": \"Author Name\", \"role\": \"author\", \"email\": \"\"}]"
+    },
+    {
+      "key": "licenses",
+      "value": "[{\"name\": \"cc-by\", \"title\": \"Creative Commons Attribution\", \"path\": \"http://www.opendefinition.org/licenses/cc-by\"}]"
+    }
+  ]
+}
