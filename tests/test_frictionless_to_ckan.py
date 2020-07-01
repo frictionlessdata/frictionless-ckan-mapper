@@ -86,25 +86,24 @@ class TestPackageConversion:
     def test_dataset_license(self):
         indict = {
             'licenses': [{
-                'name': 'odc-odbl'
+                'name': 'odc-odbl',
+                'path': 'http://example.com/file.csv',
             }]
         }
         exp = {
             'license_id': 'odc-odbl',
             'license_title': None,
+            'license_url': 'http://example.com/file.csv',
             'extras': [
                 {
                     'key': 'licenses',
-                    'value': json.dumps([{ 'name': 'odc-odbl' }])
+                    'value': json.dumps(indict['licenses'])
                 }
             ]
         }
         out = converter.package(indict)
         assert out == exp
 
-
-        # TODO: reinstate with proper extras support
-        '''
         indict = {
             'licenses': [{
                 'title': 'Open Data Commons Open Database License',
@@ -113,7 +112,14 @@ class TestPackageConversion:
         }
         exp = {
             'license_id': 'odc-odbl',
-            'license_title': 'Open Data Commons Open Database License'
+            'license_title': 'Open Data Commons Open Database License',
+            'license_url': None,
+            'extras': [
+                {
+                    'key': 'licenses',
+                    'value': json.dumps(indict['licenses'])
+                }
+            ]
         }
         out = converter.package(indict)
         assert out == exp
@@ -123,24 +129,27 @@ class TestPackageConversion:
             'licenses': [
                 {
                     'title': 'Open Data Commons Open Database License',
-                    'type': 'odc-pddl'
+                    'name': 'odc-pddl'
                 },
                 {
                     'title': 'Creative Commons CC Zero License (cc-zero)',
-                    'type': 'cc-zero'
+                    'name': 'cc-zero'
                 }
             ]
         }
         exp = {
-            'extras': [{
-                'licenses': indict['licenses']
-            }],
             'license_id': 'odc-pddl',
             'license_title': 'Open Data Commons Open Database License',
+            'license_url': None,
+            'extras': [
+                {
+                    'key': 'licenses',
+                    'value': json.dumps(indict['licenses'])
+                }
+            ]
         }
         out = converter.package(indict)
         assert out == exp
-        '''
 
     # TODO: get clear on the spelling of the key "organization".
     # It's "organisation" in the JSON schema at
@@ -249,5 +258,5 @@ class TestPackageConversion:
             ]
         }
         out = converter.package(indict)
-        out['extras'] = sorted(out['extras'], key = lambda i: i['key'])
+        out['extras'] = sorted(out['extras'], key=lambda i: i['key'])
         assert out == exp

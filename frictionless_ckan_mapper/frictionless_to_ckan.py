@@ -26,6 +26,7 @@ ckan_package_keys = [
     'groups',
     'license_id',
     'license_title',
+    'license_url',
     'maintainer',
     'maintainer_email',
     'name',
@@ -88,6 +89,7 @@ def package(fddict):
     if 'licenses' in outdict and outdict['licenses']:
         outdict['license_id'] = outdict['licenses'][0].get('name')
         outdict['license_title'] = outdict['licenses'][0].get('title')
+        outdict['license_url'] = outdict['licenses'][0].get('path')
 
     if outdict.get('contributors'):
         for c in outdict['contributors']:
