@@ -22,8 +22,7 @@ INSTALL_REQUIRES = [
 ]
 TESTS_REQUIRE = [
     'pylama',
-    'tox',
-    'requests_mock'
+    'tox'
 ]
 README = read('README.md')
 VERSION = read(PACKAGE, 'VERSION')
@@ -41,13 +40,20 @@ setup(
     extras_require={'develop': TESTS_REQUIRE},
     zip_safe=False,
     long_description=README,
-    description='{{ DESCRIPTION }}',
+    long_description_content_type='text/markdown',
+    description='A library for mapping CKAN metadata <=> Frictionless metadata.',
     author='Open Knowledge International',
     url='https://github.com/frictionlessdata/frictionless_ckan_mapper',
+    copyright='Copyright 2020 (c) Viderum Inc. / Datopian',
     license='MIT',
     keywords=[
         'data',
-        'ckan'
+        'ckan',
+        'frictionless',
+        'conversion',
+        'package',
+        'dataset',
+        'resource'
     ],
     classifiers=[
         'Environment :: Web Environment',
