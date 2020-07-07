@@ -11,9 +11,12 @@ The library has zero dependencies (not even on Data Package libs). You can use i
 [![Chat on Discord](https://img.shields.io/discord/695635777199145130)](https://discord.gg/2UgfM2k)
 
 <!-- toc -->
+
 - [Frictionless CKAN Mapper](#frictionless-ckan-mapper)
   - [Installation](#installation)
   - [Getting started](#getting-started)
+    - [CKAN => Frictionless](#ckan--frictionless)
+    - [Frictionless => CKAN](#frictionless--ckan)
   - [Reference](#reference)
     - [`ckan_to_frictionless`](#ckan_to_frictionless)
       - [`resource(ckandict)`](#resourceckandict)
@@ -32,7 +35,7 @@ The library has zero dependencies (not even on Data Package libs). You can use i
       - [Build the distribution package](#build-the-distribution-package)
       - [Test the package at test.pypy.org](#test-the-package-at-testpypyorg)
       - [Tag a new Git release and publish to PyPi](#tag-a-new-git-release-and-publish-to-pypi)
-<!-- tocstop -->
+  <!-- tocstop -->
 
 ## Installation
 
@@ -83,7 +86,6 @@ ckanout = f2c.dataset(frictionless)
 
 print(ckanout)
 ```
-
 
 ## Reference
 
@@ -180,7 +182,7 @@ Source for CKAN metadata structure:
 
 ### Algorithm: CKAN => Frictionless
 
-For Package *and* Resource
+For Package _and_ Resource
 
 1. Expand extras into the dict.
 2. Map those attributes we have known mappings for (and parse items with values e.g. a schema will be un-jsonified).
@@ -198,13 +200,13 @@ Optional extras:
 ### Install the source
 
 - Clone the repo:
-  
+
   ```bash
   git clone https://github.com/frictionlessdata/frictionless-ckan-mapper.git
   ```
 
 - And install it with pip:
-  
+
   ```bash
   pip install -e .
   ```
@@ -234,6 +236,14 @@ make list
 ```
 
 #### Build the distribution package
+
+If a previous build exists, make sure to also remove it before building again:
+
+```bash
+make distclean
+```
+
+Then:
 
 ```bash
 make dist

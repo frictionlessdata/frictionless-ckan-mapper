@@ -38,9 +38,6 @@ release: $(SENTINELS)/dist
 	@echo "This will:"
 	@echo " - Create a git tag release-$(VERSION)"
 	@echo " - Create a release package and upload it to pypi"
-	@echo
-	@echo "Continue? (hit Enter to continue or Ctrl+C to stop)"
-	@read
 	$(GIT) tag release-$(VERSION)
 	$(GIT) push --tags
 	$(PYTHON) -m twine upload dist/*
