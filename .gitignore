@@ -95,3 +95,6 @@ ENV/
 
 # VS Code
 .vscode/
+
+# Makefile
+.make-cache
