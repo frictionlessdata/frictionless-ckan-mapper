@@ -46,26 +46,44 @@ pip install frictionless-ckan-mapper
 
 ## Getting started
 
+### CKAN => Frictionless
+
 ```python
-import frictionless_ckan_mapper
-
-# or load from an API e.g.
-# json.load(urllib.urlopen(
-#     https://demo.ckan.org/api/3/package_show?id=my_dataset
-# ))
-
-ckan_dict = {
+# get a CKAN metadata item
+ckan_dataset = {
   "name": "my-dataset",
   "title": "My awesome dataset",
   "url": "http://www.example.com/data.csv"
 }
 
+# or load from an API e.g.
+# ckan_dataset = json.load(urllib.urlopen(
+#     https://demo.ckan.org/api/3/package_show?id=my_dataset
+# ))
+
 from frictionless_ckan_mapper import ckan_to_frictionless as converter
 
-out = converter.dataset(ckan_dict)
+# convert to frictionless
+frictionless_package = converter.dataset(ckan_dict)
 
-print(out)
+print(frictionless_package)
 ```
+
+### Frictionless => CKAN
+
+```python
+frictionless = {
+  'name': "f11s-dataset",
+  'path': "https://datahub.io/data.csv"
+}
+
+from frictionless_ckan_mapper import frictionless_to_ckan as f2c
+
+ckanout = f2c.dataset(frictionless)
+
+print(ckanout)
+```
+
 
 ## Reference
 
