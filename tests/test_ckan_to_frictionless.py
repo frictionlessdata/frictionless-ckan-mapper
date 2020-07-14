@@ -242,6 +242,7 @@ class TestPackageConversion:
     def test_keys_are_passed_through(self):
         indict = {
             'name': 'gdp',
+            'id': 'xxxx',
             'title': 'Countries GDP',
             'version': '1.0',
             # random
@@ -250,6 +251,7 @@ class TestPackageConversion:
         out = converter.dataset(indict)
         exp = {
             'name': 'gdp',
+            'id': 'xxxx',
             'title': 'Countries GDP',
             'version': '1.0',
             'xxx': 'aldka'

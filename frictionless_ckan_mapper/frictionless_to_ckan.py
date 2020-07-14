@@ -24,6 +24,7 @@ ckan_package_keys = [
     'author',
     'author_email',
     'groups',
+    'id',
     'license_id',
     'license_title',
     'license_url',

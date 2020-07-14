@@ -63,13 +63,18 @@ class TestPackageConversion:
     def test_passthrough(self):
         indict = {
             'name': 'gdp',
+            'id': 'xxxx',
+            'title': 'Countries GDP',
+            'version': '1.0',
+        }
+        exp = {
+            'name': 'gdp',
+            'id': 'xxxx',
             'title': 'Countries GDP',
             'version': '1.0',
         }
         out = converter.package(indict)
-        assert out['name'] == indict['name']
-        assert out['title'] == indict['title']
-        assert out['version'] == indict['version']
+        assert out == exp
 
     def test_basic_mappings(self):
         indict = {
