@@ -112,19 +112,33 @@ def package(fddict):
         del outdict['keywords']
 
     final_dict = dict(outdict)
-    for key, value in outdict.items():
+    for pkey, pvalue in outdict.items():  # "package key", "package value"
         if (
-            key not in ckan_package_keys and
-            key not in frictionless_package_keys_to_exclude
+            pkey not in ckan_package_keys and
+            pkey not in frictionless_package_keys_to_exclude
         ):
-            if isinstance(value, (dict, list)):
-                value = json.dumps(value)
+            if isinstance(pvalue, (dict, list)):
+                pvalue = json.dumps(pvalue)
             if not final_dict.get('extras'):
                 final_dict['extras'] = []
             final_dict['extras'].append(
-                {'key': key, 'value': value}
+                {'key': pkey, 'value': pvalue}
             )
-            del final_dict[key]
-    outdict = dict(final_dict)
+            del final_dict[pkey]
+        elif pkey == 'resources':
+            # Remap differences from Frictionless to CKAN resource.
+            # List of resources as `dict`: Iterate over each resource.
+            for num, rdict in enumerate(outdict[pkey]):  # resource dict
+                # iterate over "resource key" and "resource value"
+                for rkey, rvalue in resource_mapping.items():
+                    temp_rdict = dict(rdict)  # avoid modifying dict in place
+                    # iterate over "key in rkey", "value in rvalue"
+                    for k, v in temp_rdict.items():
+                        if rkey == k:  # remapping has to be done
+                            rdict[rvalue] = rdict[k]
+                            del rdict[k]
+                # update resource in final_dict with remapping being done
+                final_dict[pkey][num] = dict(rdict)
 
+    outdict = dict(final_dict)  # return dict with all remapping done
     return outdict
