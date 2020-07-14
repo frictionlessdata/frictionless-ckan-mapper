@@ -59,3 +59,18 @@ class TestPackageConversion:
         # - Keys defined in CKAN but ignored in Frictionless, such as `id`
         #   (because a Frictionless package doesn't have an id property) will
         #   also go to 'extras'.
+
+    def test_ckan_round_trip_does_not_generate_empty_keywords(self):
+        '''When CKAN does not have `tags`, it should not create the empty
+        `keywords` list in a Frictionless package. This would lead to a round
+        trip where `tags` is also not there nor empty.'''
+        ckan1 = {
+            "x": "yyy",
+            "tags": []
+        }
+        exp_fd1 = {"x": "yyy"}
+        fd1 = ckan_to_frictionless.dataset(ckan1)
+        assert fd1 == exp_fd1
+        ckan2 = frictionless_to_ckan.package(fd1)
+        exp_ckan2 = {'extras': [{'key': 'x', 'value': 'yyy'}]}
+        assert ckan2 == exp_ckan2
