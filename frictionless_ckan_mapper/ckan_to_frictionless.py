@@ -107,6 +107,11 @@ def dataset(ckandict):
             outdict[value] = ckandict[key]
             del outdict[key]
 
+    # map resources inside dataset
+    if 'resources' in ckandict:
+        outdict['resources'] = [resource(res) for res in
+                                ckandict['resources']]
+
     # tags
     if ckandict.get('tags'):
         outdict['keywords'] = [tag['name'] for tag in ckandict['tags']]
@@ -141,11 +146,6 @@ def dataset(ckandict):
 
     for key in ['author', 'author_email', 'maintainer', 'maintainer_email']:
         outdict.pop(key, None)
-
-    # Reformat resources inside dataset
-    if 'resources' in outdict:
-        outdict['resources'] = [resource(res) for res in
-                                outdict['resources']]
 
     # Algorithm for licenses
     # 1. Use extras first

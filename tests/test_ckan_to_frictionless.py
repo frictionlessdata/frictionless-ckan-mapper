@@ -351,33 +351,24 @@ class TestPackageConversion:
         assert out == exp
 
     def test_resources_are_converted(self):
-        # Package has multiple resources
-        resource_1 = {
-            'id': '1234',
-            'name': 'data.csv',
-            'url': 'http://someplace.com/data.csv'
-        }
-        resource_2 = {
-            'id': '12345',
-            'name': 'data2.csv',
-            'url': 'http://someotherplace.com/data2.csv'
-        }
-        indict_2_resources = {
+        indict = {
             'name': 'gdp',
-            'title': 'Countries GDP',
-            'resources': [resource_1, resource_2]
+            'resources': [{
+                'name': 'data.csv',
+                'url': 'http://someplace.com/data.csv',
+                'size': 100
+            }]
         }
-        indict_1_resource = {
+        exp = {
             'name': 'gdp',
-            'title': 'Countries GDP',
-            'resources': [resource_1]
+            'resources': [{
+                'name': 'data.csv',
+                'path': 'http://someplace.com/data.csv',
+                'bytes': 100
+            }]
         }
-        out = converter.dataset(indict_2_resources)
-        assert len(out['resources']) == 2
-
-        # Package has a single resource
-        out = converter.dataset(indict_1_resource)
-        assert len(out['resources']) == 1
+        out = converter.dataset(indict)
+        assert out == exp
 
     def test_all_keys_are_passed_through(self):
         indict = {
