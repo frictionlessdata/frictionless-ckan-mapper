@@ -265,3 +265,24 @@ class TestPackageConversion:
         out = converter.package(indict)
         out['extras'] = sorted(out['extras'], key=lambda i: i['key'])
         assert out == exp
+
+    def test_resources_are_converted(self):
+        indict = {
+            'name': 'gdp',
+            'resources': [{
+                'name': 'data.csv',
+                'path': 'http://someplace.com/data.csv',
+                'bytes': 100
+            }]
+        }
+        exp = {
+            'name': 'gdp',
+            'resources': [{
+                'name': 'data.csv',
+                'url': 'http://someplace.com/data.csv',
+                'size': 100
+            }]
+        }
+        out = converter.package(indict)
+        assert out == exp
+

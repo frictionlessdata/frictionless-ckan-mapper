@@ -25,9 +25,9 @@
       "tracking_summary": { "recent": 0, "total": 0 },
       "url_type": "upload",
       "versions_upload_timestamp": "2020-06-25T11:33:49.567522",
-      "bytes": 40,
-      "mediatype": "text/csv",
-      "path": "http://localhost:5000/dataset/1f7db1f1-1400-4572-a860-0977326a5521/resource/e778ca29-5fb7-4063-ad9b-68040f88ab8a/download/mini-csv.csv"
+      "size": 40,
+      "mimetype": "text/csv",
+      "url": "http://localhost:5000/dataset/1f7db1f1-1400-4572-a860-0977326a5521/resource/e778ca29-5fb7-4063-ad9b-68040f88ab8a/download/mini-csv.csv"
     }
   ],
   "title": "Testing",

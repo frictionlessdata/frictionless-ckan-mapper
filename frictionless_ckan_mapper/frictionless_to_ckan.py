@@ -87,6 +87,10 @@ def package(fddict):
             outdict[value] = fddict[key]
             del outdict[key]
 
+    # map resources inside dataset
+    if 'resources' in fddict:
+        outdict['resources'] = [resource(res) for res in fddict['resources']]
+
     if 'licenses' in outdict and outdict['licenses']:
         outdict['license_id'] = outdict['licenses'][0].get('name')
         outdict['license_title'] = outdict['licenses'][0].get('title')
