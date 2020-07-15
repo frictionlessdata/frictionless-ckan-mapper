@@ -232,6 +232,59 @@ class TestPackageConversion:
         out = converter.package(indict)
         assert out == exp
 
+    def test_single_contributor_is_not_in_extras(self):
+        indict = {
+            'author': 'Patricio Del Boca',
+            'author_email': '',
+            'extras': [
+                {'key': 'contributors',
+                    'value': (
+                        '[{"role": "author", "email": "", "title": '
+                        '"Patricio Del Boca"}]'
+                    )
+                 }
+            ]
+        }
+        exp = {
+            'author': 'Patricio Del Boca',
+            'author_email': '',
+            'extras': []
+        }
+        out = converter.package(indict)
+        assert out == exp
+
+    def test_multiple_authors_and_maintainers_are_converted(self):
+        indict = {
+            'author': 'Patricio',
+            'author_email': '',
+            'extras': [
+                {'key': 'contributors',
+                 'value': (
+                     '[{"role": "author", "email": "", "title": "Patricio"},'
+                     '{"role": "maintainer", "email": "", "title": "Rufus"},'
+                     '{"role": "author", "email": "", "title": "Paul"}]'
+                 )
+                }
+            ]
+        }
+        exp = {
+            'author': 'Patricio',
+            'author_email': '',
+            'maintainer': 'Rufus',
+            'maintainer_email': '',
+            'extras': [
+                {'key': u'contributors',
+                 'value': (
+                     '[{"role": "author", "email": "", "title": "Patricio"},'
+                     '{"role": "maintainer", "email": "", "title": "Rufus"},'
+                     '{"role": "author", "email": "", "title": "Paul"}]'
+                 )
+                }
+            ]
+        }
+        out = converter.package(indict)
+        assert out == exp
+
     def test_keywords_converted_to_tags(self):
         keywords = ['economy!!!', 'World Bank']
         indict = {'keywords': keywords}
