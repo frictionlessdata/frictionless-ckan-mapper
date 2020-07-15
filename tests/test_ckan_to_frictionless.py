@@ -417,3 +417,11 @@ class TestPackageConversion:
         }
         out = converter.dataset(indict)
         assert out == exp
+
+    def test_empty_tags_ignored(self):
+        indict = {
+            "tags": []
+            }
+        exp = {}
+        out = converter.dataset(indict)
+        assert out == exp

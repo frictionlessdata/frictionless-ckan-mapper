@@ -108,9 +108,9 @@ def dataset(ckandict):
             del outdict[key]
 
     # tags
-    if 'tags' in ckandict:
+    if ckandict.get('tags'):
         outdict['keywords'] = [tag['name'] for tag in ckandict['tags']]
-        del outdict['tags']
+    outdict.pop('tags', None)
 
     # author, maintainer => contributors
     # what to do if contributors already there? Options:
