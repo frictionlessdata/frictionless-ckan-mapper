@@ -51,10 +51,6 @@
     { "key": "revision_id", "value": "41109a92-138b-4a90-be7b-7f202ad83492" },
     { "key": "tracking_summary", "value": "{\"recent\": 0, \"total\": 0}" },
     {
-      "key": "contributors",
-      "value": "[{\"title\": \"Author Name\", \"role\": \"author\", \"email\": \"\"}]"
-    },
-    {
       "key": "licenses",
       "value": "[{\"name\": \"cc-by\", \"title\": \"Creative Commons Attribution\", \"path\": \"http://www.opendefinition.org/licenses/cc-by\"}]"
     }

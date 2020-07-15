@@ -162,6 +162,7 @@ class TestPackageConversion:
     # while it's "organization" in the page of the specs at
     # https://specs.frictionlessdata.io/data-package/#metadata
     def test_contributors(self):
+        # author conversion
         indict = {
             'contributors': [
                 {
@@ -171,13 +172,7 @@ class TestPackageConversion:
         }
         exp = {
             'author': 'John Smith',
-            'author_email': None,
-            'extras': [
-                {
-                    'key': 'contributors',
-                    'value': json.dumps(indict['contributors'])
-                }
-            ]
+            'author_email': None
         }
         out = converter.package(indict)
         assert out == exp
@@ -194,10 +189,6 @@ class TestPackageConversion:
             ]
         }
         exp = {
-            'extras': [{
-                'key': 'contributors',
-                'value': json.dumps(indict['contributors'])
-            }],
             'maintainer': 'xyz',
             'maintainer_email': 'xyz@abc.com'
         }
@@ -220,14 +211,32 @@ class TestPackageConversion:
             ]
         }
         exp = {
-            'extras': [{
-                'key': 'contributors',
-                'value': json.dumps(indict['contributors'])
-            }],
             'author': 'abc',
             'author_email': 'abc@abc.com',
             'maintainer': 'xyz',
             'maintainer_email': 'xyz@xyz.com'
+        }
+        out = converter.package(indict)
+        assert out == exp
+        
+        # finally if we have contributors beyond that expected for ckan we keep
+        # that in extras (raw)
+        indict = {
+	    'contributors': [
+		{"role": "author", "email": "", "title": "Patricio"},
+                {"role": "maintainer", "email": "", "title": "Rufus"},
+                {"role": "author", "email": "", "title": "Paul"}
+            ]
+        }
+        exp = {
+            'author': 'Patricio',
+            'author_email': '',
+            'maintainer': 'Rufus',
+            'maintainer_email': '',
+            'extras': [{
+                'key': u'contributors',
+                'value': json.dumps(indict['contributors'])
+             }]
         }
         out = converter.package(indict)
         assert out == exp

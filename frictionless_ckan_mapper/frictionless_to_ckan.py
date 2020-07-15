@@ -109,6 +109,23 @@ def package(fddict):
                 outdict['maintainer_email'] = c.get('email')
                 break
 
+        # we remove contributors in case where we have extracted everything into ckan core
+        # this helps ensure that round tripping with ckan is good
+        # if contributors has length 1 and role in author or maintainer
+        # or contributors == 2 and no of authors and maintainer types <= 1 THEN delete
+        if (
+            (len (outdict.get('contributors')) == 1 and
+                outdict['contributors'][0].get('role') in [None, 'author',
+                    'maintainer'])
+            or
+            (len (outdict.get('contributors')) == 2 and
+                [c.get('role') for c in outdict['contributors']]
+                not in ([None, None], ['maintainer', 'maintainer'], ['author', 'author'])
+                )
+            ):
+            outdict.pop('contributors', None)
+
+
     if outdict.get('keywords'):
         outdict['tags'] = [
             {'name': keyword} for keyword in outdict['keywords']
