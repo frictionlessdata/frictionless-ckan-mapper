@@ -70,7 +70,8 @@ class TestPackageConversion:
             "metadata_created": "2020-03-31T21:57:48.676558",
             "metadata_modified": "2020-03-31T21:57:50.215642",
             "creator_user_id": "b5ab876c-0d04-479a-92de-f66db5dd6fb3",
-            "private": False
+            "private": False,
+            "revision_id": "xxx",
             # TODO: test groups
         }
         out = converter.package(indict)

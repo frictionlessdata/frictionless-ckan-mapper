@@ -33,16 +33,10 @@
       "url": "http://localhost:5000/dataset/1f7db1f1-1400-4572-a860-0977326a5521/resource/e778ca29-5fb7-4063-ad9b-68040f88ab8a/download/mini-csv.csv"
     }
   ],
+  "revision_id": "41109a92-138b-4a90-be7b-7f202ad83492",
   "title": "Testing",
+  "tracking_summary": {"recent": 0, "total": 0},
   "type": "dataset",
   "version": "",
-  "url": "",
-  "extras": [
-    {
-      "key": "organization",
-      "value": "{\"approval_status\": \"approved\", \"created\": \"2020-06-25T11:31:03.384316\", \"description\": \"\", \"id\": \"5df7636c-a47f-4ab8-b6f0-3212280da926\", \"image_url\": \"\", \"is_organization\": true, \"name\": \"odc\", \"revision_id\": \"f0b87003-e385-48c6-b4b6-5fe725cbee8e\", \"state\": \"active\", \"title\": \"ODC\", \"type\": \"organization\"}"
-    },
-    { "key": "revision_id", "value": "41109a92-138b-4a90-be7b-7f202ad83492" },
-    { "key": "tracking_summary", "value": "{\"recent\": 0, \"total\": 0}" }
-  ]
+  "url": ""
 }

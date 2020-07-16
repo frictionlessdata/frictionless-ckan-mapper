@@ -394,7 +394,20 @@ class TestPackageConversion:
             'isopen': True,
             'num_tags': 1,
             'num_resources': 10,
-            'state': 'active'
+            'state': 'active',
+            "organization": {
+                "description": "",
+                "title": "primary_care_prescribing_dispensing",
+                "created": "2020-03-31T21:51:41.334189",
+                "approval_status": "approved",
+                "is_organization": True,
+                "state": "active",
+                "image_url": "",
+                "revision_id": "7c86fde3-9899-41d6-b0bb-6c72dd4b6b94",
+                "type": "organization",
+                "id": "a275814e-6c15-40a8-99fd-af911f1568ef",
+                "name": "primary_care_prescribing_dispensing"
+            }
         }
         exp = {}
         out = converter.dataset(indict)
