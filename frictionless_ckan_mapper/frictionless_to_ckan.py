@@ -47,8 +47,7 @@ ckan_package_keys = [
 ]
 
 frictionless_package_keys_to_exclude = [
-    'extras',
-    'keywords'
+    'extras'
 ]
 
 
