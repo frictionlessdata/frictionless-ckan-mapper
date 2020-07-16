@@ -70,7 +70,10 @@ def resource(ckandict):
 
 
 dataset_keys_to_remove = [
-    'state'
+    'state',        # b/c this is state info not metadata about dataset
+    'isopen',       # b/c computed info from license (this is render info not metadata)
+    'num_resources',# render info not metadata
+    'num_tags'      # ditoo
 ]
 dataset_mapping = {
     'notes': 'description',

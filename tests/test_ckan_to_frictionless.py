@@ -391,10 +391,12 @@ class TestPackageConversion:
 
     def test_keys_are_removed_that_should_be(self):
         indict = {
+            'isopen': True,
+            'num_tags': 1,
+            'num_resources': 10,
             'state': 'active'
         }
-        exp = {
-        }
+        exp = {}
         out = converter.dataset(indict)
         assert out == exp
 
