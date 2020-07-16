@@ -177,23 +177,19 @@ Resource o-- DataDictionary
 
 Source for CKAN metadata structure:
 
-- Dataset (Package): https://docs.ckan.org/en/2.8/api/index.html#ckan.logic.action.create.package_create
+* Dataset (Package): https://docs.ckan.org/en/2.8/api/index.html#ckan.logic.action.create.package_create
+  * `Package.as_dict` method: https://github.com/ckan/ckan/blob/2.8/ckan/model/package.py#L195-L223
+  * `package_show` ...
 - Resource: https://docs.ckan.org/en/2.8/api/index.html#ckan.logic.action.create.resource_create
 
 ### Algorithm: CKAN => Frictionless
 
-For Package _and_ Resource
-
-1. Expand extras into the dict.
-2. Map those attributes we have known mappings for (and parse items with values e.g. a schema will be un-jsonified).
-3. Drop anything we explicitly drop, e.g. `package_id` on a resource object.
-4. Copy everything else over as is.
-
-Optional extras:
-
-- Add a profile field
+See the code in [`frictionless_ckan_mapper/ckan_to_frictionless.py`](./frictionless_ckan_mapper/ckan_to_frictionless.py)
 
 ### Algorithm: Frictionless => CKAN
+
+See the code in [`frictionless_ckan_mapper/frictionless_to_ckan.py`](./frictionless_ckan_mapper/frictionless_to_ckan.py)
+
 
 ## Developers
 
