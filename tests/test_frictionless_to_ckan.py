@@ -98,13 +98,7 @@ class TestPackageConversion:
         exp = {
             'license_id': 'odc-odbl',
             'license_title': None,
-            'license_url': 'http://example.com/file.csv',
-            'extras': [
-                {
-                    'key': 'licenses',
-                    'value': json.dumps(indict['licenses'])
-                }
-            ]
+            'license_url': 'http://example.com/file.csv'
         }
         out = converter.package(indict)
         assert out == exp
@@ -118,18 +112,12 @@ class TestPackageConversion:
         exp = {
             'license_id': 'odc-odbl',
             'license_title': 'Open Data Commons Open Database License',
-            'license_url': None,
-            'extras': [
-                {
-                    'key': 'licenses',
-                    'value': json.dumps(indict['licenses'])
-                }
-            ]
+            'license_url': None
         }
         out = converter.package(indict)
         assert out == exp
 
-        # Finally, what if license*s* are already there...
+        # Finally, what if more than one license
         indict = {
             'licenses': [
                 {

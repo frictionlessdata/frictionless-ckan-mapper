@@ -49,10 +49,6 @@
       "value": "{\"approval_status\": \"approved\", \"created\": \"2020-06-25T11:31:03.384316\", \"description\": \"\", \"id\": \"5df7636c-a47f-4ab8-b6f0-3212280da926\", \"image_url\": \"\", \"is_organization\": true, \"name\": \"odc\", \"revision_id\": \"f0b87003-e385-48c6-b4b6-5fe725cbee8e\", \"state\": \"active\", \"title\": \"ODC\", \"type\": \"organization\"}"
     },
     { "key": "revision_id", "value": "41109a92-138b-4a90-be7b-7f202ad83492" },
-    { "key": "tracking_summary", "value": "{\"recent\": 0, \"total\": 0}" },
-    {
-      "key": "licenses",
-      "value": "[{\"name\": \"cc-by\", \"title\": \"Creative Commons Attribution\", \"path\": \"http://www.opendefinition.org/licenses/cc-by\"}]"
-    }
+    { "key": "tracking_summary", "value": "{\"recent\": 0, \"total\": 0}" }
   ]
 }

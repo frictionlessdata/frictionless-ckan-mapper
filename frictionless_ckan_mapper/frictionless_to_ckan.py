@@ -95,6 +95,9 @@ def package(fddict):
         outdict['license_id'] = outdict['licenses'][0].get('name')
         outdict['license_title'] = outdict['licenses'][0].get('title')
         outdict['license_url'] = outdict['licenses'][0].get('path')
+        # remove it so it won't get put in extras
+        if len(outdict['licenses']) == 1:
+            outdict.pop('licenses', None)
 
     if outdict.get('contributors'):
         for c in outdict['contributors']:
@@ -109,10 +112,12 @@ def package(fddict):
                 outdict['maintainer_email'] = c.get('email')
                 break
 
-        # we remove contributors in case where we have extracted everything into ckan core
+        # we remove contributors where we have extracted everything into ckan core
+        # that way it won't end up in extras
         # this helps ensure that round tripping with ckan is good
+        # when have we extracted everything?
         # if contributors has length 1 and role in author or maintainer
-        # or contributors == 2 and no of authors and maintainer types <= 1 THEN delete
+        # or contributors == 2 and no of authors and maintainer types <= 1
         if (
             (len (outdict.get('contributors')) == 1 and
                 outdict['contributors'][0].get('role') in [None, 'author',
