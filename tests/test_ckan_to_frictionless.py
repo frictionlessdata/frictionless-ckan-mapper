@@ -93,6 +93,8 @@ class TestResourceConversion:
 
     def test_resource_keys_pass_through(self):
         indict = {
+            'id': 'xxx',
+            'name': 'abc',
             'description': 'GDPs list',
             'format': 'CSV',
             'hash': 'e785c0883d7a104330e69aee73d4f235',
