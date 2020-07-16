@@ -206,12 +206,12 @@ class TestPackageConversion:
         }
         out = converter.package(indict)
         assert out == exp
-        
+
         # finally if we have contributors beyond that expected for ckan we keep
         # that in extras (raw)
         indict = {
-	    'contributors': [
-		{"role": "author", "email": "", "title": "Patricio"},
+            'contributors': [
+                {"role": "author", "email": "", "title": "Patricio"},
                 {"role": "maintainer", "email": "", "title": "Rufus"},
                 {"role": "author", "email": "", "title": "Paul"}
             ]
