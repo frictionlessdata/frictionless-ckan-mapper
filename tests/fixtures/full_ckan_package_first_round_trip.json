@@ -1,11 +1,14 @@
 {
   "author": "Author Name",
   "author_email": "",
+  "creator_user_id": "c6bd4f0b-f550-4f5d-9537-782a2d1d4c7a",
   "id": "1f7db1f1-1400-4572-a860-0977326a5521",
   "license_id": "cc-by",
   "license_title": "Creative Commons Attribution",
   "license_url": "http://www.opendefinition.org/licenses/cc-by",
   "groups": [],
+  "metadata_created": "2020-06-25T14:33:18.301040",
+  "metadata_modified": "2020-06-25T14:50:34.860070",
   "name": "testing",
   "notes": "Test new description for version 1.2",
   "owner_org": "5df7636c-a47f-4ab8-b6f0-3212280da926",
@@ -35,13 +38,7 @@
   "version": "",
   "url": "",
   "extras": [
-    {
-      "key": "creator_user_id",
-      "value": "c6bd4f0b-f550-4f5d-9537-782a2d1d4c7a"
-    },
     { "key": "isopen", "value": true },
-    { "key": "metadata_created", "value": "2020-06-25T14:33:18.301040" },
-    { "key": "metadata_modified", "value": "2020-06-25T14:50:34.860070" },
     { "key": "num_resources", "value": 1 },
     { "key": "num_tags", "value": 0 },
     {

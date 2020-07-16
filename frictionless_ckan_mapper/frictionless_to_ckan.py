@@ -24,6 +24,7 @@ package_mapping = {
 ckan_package_keys = [
     'author',
     'author_email',
+    'creator_user_id',
     'groups',
     'id',
     'license_id',
@@ -31,6 +32,8 @@ ckan_package_keys = [
     'license_url',
     'maintainer',
     'maintainer_email',
+    'metadata_created',
+    'metadata_modified',
     'name',
     'notes',
     'owner_org',

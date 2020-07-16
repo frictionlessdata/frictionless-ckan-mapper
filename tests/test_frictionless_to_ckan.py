@@ -66,15 +66,15 @@ class TestPackageConversion:
             'id': 'xxxx',
             'title': 'Countries GDP',
             'version': '1.0',
-        }
-        exp = {
-            'name': 'gdp',
-            'id': 'xxxx',
-            'title': 'Countries GDP',
-            'version': '1.0',
+            "owner_org": "a275814e-6c15-40a8-99fd-af911f1568ef",
+            "metadata_created": "2020-03-31T21:57:48.676558",
+            "metadata_modified": "2020-03-31T21:57:50.215642",
+            "creator_user_id": "b5ab876c-0d04-479a-92de-f66db5dd6fb3",
+            "private": False
+            # TODO: test groups
         }
         out = converter.package(indict)
-        assert out == exp
+        assert out == indict
 
     def test_basic_mappings(self):
         indict = {
