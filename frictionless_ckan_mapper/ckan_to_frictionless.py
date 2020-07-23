@@ -14,7 +14,6 @@ resource_mapping = {
 }
 
 resource_keys_to_remove = [
-    'package_id',
     'position',
     'datastore_active',
     'state'

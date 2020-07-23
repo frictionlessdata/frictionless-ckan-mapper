@@ -56,7 +56,6 @@ class TestResourceConversion:
 
     def test_keys_are_removed_that_should_be(self):
         indict = {
-            "package_id": "xxx",
             "position": 2,
             "datastore_active": True,
             "state": "active"
