@@ -43,7 +43,7 @@ setup(
     long_description_content_type='text/markdown',
     description='A library for mapping CKAN metadata <=> Frictionless metadata.',
     author='Open Knowledge International',
-    url='https://github.com/frictionlessdata/frictionless_ckan_mapper',
+    url='https://github.com/frictionlessdata/frictionless-ckan-mapper',
     copyright='Copyright 2020 (c) Viderum Inc. / Datopian',
     license='MIT',
     keywords=[
