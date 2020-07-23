@@ -31,16 +31,17 @@ install:
 list:
 	@grep '^\.PHONY' Makefile | cut -d' ' -f2- | tr ' ' '\n'
 
-## Upload a release of the package to PyPi and create a Git tag
+# Upload a release of the package to PyPi and create a Git tag
+# Note: Travis CI will upload on tag push.
 release: $(SENTINELS)/dist
 	@echo
 	@echo "You are about to release authoritative version $(VERSION)"
 	@echo "This will:"
 	@echo " - Create a git tag release-$(VERSION)"
-	@echo " - Create a release package and upload it to pypi"
+	@echo " - Create a release package and upload it to PyPi via Travis CI"
 	$(GIT) tag release-$(VERSION)
 	$(GIT) push --tags
-	$(PYTHON) -m twine upload dist/*
+# $(PYTHON) -m twine upload dist/*
 
 $(SENTINELS):
 	mkdir $@

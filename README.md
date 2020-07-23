@@ -32,10 +32,10 @@ The library has zero dependencies (not even on Data Package libs). You can use i
     - [Install the source](#install-the-source)
     - [Run the tests](#run-the-tests)
     - [Building and publishing the package](#building-and-publishing-the-package)
-      - [Build the distribution package](#build-the-distribution-package)
-      - [Test the package at test.pypy.org](#test-the-package-at-testpypyorg)
-      - [Tag a new Git release and publish to PyPi](#tag-a-new-git-release-and-publish-to-pypi)
-  <!-- tocstop -->
+      - [Build the distribution package locally for testing purposes](#build-the-distribution-package-locally-for-testing-purposes)
+      - [Test the package at test.pypi.org](#test-the-package-at-testpypiorg)
+      - [Tag a new Git release and publish to the official PyPi](#tag-a-new-git-release-and-publish-to-the-official-pypi)
+    <!-- tocstop -->
 
 ## Installation
 
@@ -177,10 +177,11 @@ Resource o-- DataDictionary
 
 Source for CKAN metadata structure:
 
-* Dataset (Package): https://docs.ckan.org/en/2.8/api/index.html#ckan.logic.action.create.package_create
-  * `Package.as_dict` method: https://github.com/ckan/ckan/blob/2.8/ckan/model/package.py#L195-L223
-  * `package_show` ...
-- Resource: https://docs.ckan.org/en/2.8/api/index.html#ckan.logic.action.create.resource_create
+- Dataset (Package): https://docs.ckan.org/en/2.8/api/index.html#ckan.logic.action.create.package_create
+  - `Package.as_dict` method: https://github.com/ckan/ckan/blob/2.8/ckan/model/package.py#L195-L223
+  - `package_show` ...
+
+* Resource: https://docs.ckan.org/en/2.8/api/index.html#ckan.logic.action.create.resource_create
 
 ### Algorithm: CKAN => Frictionless
 
@@ -189,7 +190,6 @@ See the code in [`frictionless_ckan_mapper/ckan_to_frictionless.py`](./frictionl
 ### Algorithm: Frictionless => CKAN
 
 See the code in [`frictionless_ckan_mapper/frictionless_to_ckan.py`](./frictionless_ckan_mapper/frictionless_to_ckan.py)
-
 
 ## Developers
 
@@ -231,7 +231,7 @@ To see a list of available commands from the `Makefile`, execute:
 make list
 ```
 
-#### Build the distribution package
+#### Build the distribution package locally for testing purposes
 
 If a previous build exists, make sure to also remove it before building again:
 
@@ -251,7 +251,7 @@ Alternatively, this command will accomplish the same to build packages for both 
 python setup.py sdist bdist_wheel --universal
 ```
 
-#### Test the package at test.pypy.org
+#### Test the package at test.pypi.org
 
 ```bash
 python -m twine upload --repository testpypi dist/*
@@ -259,9 +259,7 @@ python -m twine upload --repository testpypi dist/*
 
 The package will be publicly available at https://test.pypi.org/project/frictionless-ckan-mapper/ and you will be able to `pip install` it as usual.
 
-#### Tag a new Git release and publish to PyPi
-
-**Note:** You will need to publish from your personal PyPi account and be given access as a contributor to the project.
+#### Tag a new Git release and publish to the official PyPi
 
 Make sure to update the version of the package in the file `frictionless_ckan_mapper/VERSION`. Then:
 
