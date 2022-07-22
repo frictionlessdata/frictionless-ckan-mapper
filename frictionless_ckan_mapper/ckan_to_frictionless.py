@@ -95,7 +95,6 @@ def dataset(ckandict):
     # Convert the structure of extras
     # structure of extra item is {key: xxx, value: xxx}
     if 'extras' in ckandict:
-        extras_dict = {}
         for extra in ckandict['extras']:
             key = extra['key']
             value = extra['value']
@@ -103,15 +102,14 @@ def dataset(ckandict):
                 value = json.loads(value)
             except (json_parse_exception, TypeError):
                 pass
-            extras_dict[key] = value
-        outdict['extras'] = extras_dict
+            outdict[key] = value
+        del outdict['extras']
 
     # Map dataset keys
     for key, value in dataset_mapping.items():
         if key in ckandict:
             outdict[value] = ckandict[key]
-            if key != value:
-                del outdict[key]
+            del outdict[key]
 
     # map resources inside dataset
     if 'resources' in ckandict:
