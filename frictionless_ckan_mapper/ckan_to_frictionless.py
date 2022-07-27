@@ -1,5 +1,7 @@
 # coding=utf-8
 import json
+import re
+import unidecode
 
 try:
     json_parse_exception = json.decoder.JSONDecodeError
@@ -54,6 +56,13 @@ def resource(ckandict):
                     resource[key] = value
                 except (json_parse_exception, TypeError):
                     pass
+
+            if key == 'name':
+                value = unidecode.unidecode(value)
+                value = value.lower()
+                value = value.strip()
+                value = re.sub('\W+', '-', value)
+                resource[key] = value
 
     # Remap differences from CKAN to Frictionless resource
     for key, value in resource_mapping.items():

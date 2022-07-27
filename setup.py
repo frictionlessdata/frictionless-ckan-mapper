@@ -18,7 +18,8 @@ def read(*paths):
 PACKAGE = 'frictionless_ckan_mapper'
 NAME = PACKAGE.replace('_', '-')
 INSTALL_REQUIRES = [
-    'six>=1.9,<2.0'
+    'six>=1.9,<2.0',
+    'unidecode'
 ]
 TESTS_REQUIRE = [
     'pylama',
