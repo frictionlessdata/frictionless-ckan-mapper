@@ -49,7 +49,7 @@ def resource(ckandict):
     # dict
     # * else do nothing
     for key, value in resource.items():
-        if isinstance(value, six.text_type):
+        if isinstance(value, six.text_type) or isinstance(value, six.string_types):
             value = value.strip()
             if value.startswith('{') or value.startswith('['):
                 try:
@@ -59,7 +59,8 @@ def resource(ckandict):
                     pass
 
             if key == 'name':
-                value = unidecode.unidecode(value)
+                if isinstance(value, six.text_type) 
+                    value = unidecode.unidecode(value)
                 value = value.lower()
                 value = value.strip()
                 value = re.sub('\W+', '-', value)
