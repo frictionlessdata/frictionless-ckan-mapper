@@ -59,7 +59,7 @@ def resource(ckandict):
                     pass
 
             if key == 'name':
-                if isinstance(value, six.text_type) 
+                if isinstance(value, six.text_type):
                     value = unidecode.unidecode(value)
                 value = value.lower()
                 value = value.strip()
