@@ -1,4 +1,5 @@
 # coding=utf-8
+import six
 import json
 import re
 import unidecode
@@ -48,7 +49,7 @@ def resource(ckandict):
     # dict
     # * else do nothing
     for key, value in resource.items():
-        if isinstance(value, str):
+        if isinstance(value, six.text_type):
             value = value.strip()
             if value.startswith('{') or value.startswith('['):
                 try:
