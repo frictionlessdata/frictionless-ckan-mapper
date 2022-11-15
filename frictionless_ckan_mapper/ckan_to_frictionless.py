@@ -63,7 +63,9 @@ def resource(ckandict):
                     value = unidecode.unidecode(value)
                 value = value.lower()
                 value = value.strip()
-                value = re.sub('\W+', '-', value)
+                value = re.sub('[^[\w|.]+', '-', value)
+                if value == '':
+                    value = 'unnamed-resource'
                 resource[key] = value
 
     # Remap differences from CKAN to Frictionless resource
