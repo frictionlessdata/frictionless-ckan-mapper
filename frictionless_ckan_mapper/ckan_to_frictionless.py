@@ -129,6 +129,14 @@ def dataset(ckandict):
         outdict['resources'] = [resource(res) for res in
                                 ckandict['resources']]
 
+    # prevent having multiple unanmed resources with the same name
+    # to follow the specs https://specs.frictionlessdata.io/data-resource/#name
+    unnamed_num = 1
+    for res in outdict.get('resources', []):
+        if res['name'] == 'unnamed-resource':
+            res['name'] += '-{}'.format(unnamed_num)
+            unnamed_num += 1
+
     # tags
     if ckandict.get('tags'):
         outdict['keywords'] = [tag['name'] for tag in ckandict['tags']]
