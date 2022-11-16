@@ -63,7 +63,9 @@ def resource(ckandict):
                     value = unidecode.unidecode(value)
                 value = value.lower()
                 value = value.strip()
-                value = re.sub('\W+', '-', value)
+                value = re.sub('[^[\w|.]+', '-', value)
+                if value == '':
+                    value = 'unnamed-resource'
                 resource[key] = value
 
     # Remap differences from CKAN to Frictionless resource
@@ -126,6 +128,14 @@ def dataset(ckandict):
     if 'resources' in ckandict:
         outdict['resources'] = [resource(res) for res in
                                 ckandict['resources']]
+
+    # prevent having multiple unanmed resources with the same name
+    # to follow the specs https://specs.frictionlessdata.io/data-resource/#name
+    unnamed_num = 1
+    for res in outdict.get('resources', []):
+        if res['name'] == 'unnamed-resource':
+            res['name'] += '-{}'.format(unnamed_num)
+            unnamed_num += 1
 
     # tags
     if ckandict.get('tags'):
