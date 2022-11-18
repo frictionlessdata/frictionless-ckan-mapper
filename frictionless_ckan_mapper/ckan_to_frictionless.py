@@ -129,6 +129,10 @@ def dataset(ckandict):
         outdict['resources'] = [resource(res) for res in
                                 ckandict['resources']]
 
+    for res in outdict.get('resources', []):
+        if 'name' not in res:
+            res['name'] = 'unnamed-resource'
+
     # prevent having multiple unanmed resources with the same name
     # to follow the specs https://specs.frictionlessdata.io/data-resource/#name
     unnamed_num = 1
@@ -158,7 +162,7 @@ def dataset(ckandict):
                 'role': 'author'
             }
             if 'author_email' in outdict:
-                contrib['email'] = outdict['author_email']
+                contrib['email'] = outdict['author_email'] if outdict['author_email'] else ''
             outdict['contributors'].append(contrib)
         if 'maintainer' in outdict and outdict['maintainer']:
             contrib = {
@@ -166,7 +170,7 @@ def dataset(ckandict):
                 'role': 'maintainer'
             }
             if 'maintainer_email' in outdict:
-                contrib['email'] = outdict['maintainer_email']
+                contrib['email'] = outdict['maintainer_email'] if outdict['maintainer_email'] else ''
             outdict['contributors'].append(contrib)
 
     for key in ['author', 'author_email', 'maintainer', 'maintainer_email']:
@@ -185,13 +189,13 @@ def dataset(ckandict):
             outdict['licenses'] = [{}]
             break  # check to create list of dicts only once
     if 'license_id' in outdict:
-        outdict['licenses'][0]['name'] = outdict['license_id']
+        outdict['licenses'][0]['name'] = outdict.get('license_id', '') if outdict['license_id'] else ''
         outdict.pop('license_id', None)
     if 'license_title' in outdict:
-        outdict['licenses'][0]['title'] = outdict['license_title']
+        outdict['licenses'][0]['title'] = outdict.get('license_title', '') if outdict['license_title'] else ''
         outdict.pop('license_title', None)
     if 'license_url' in outdict:
-        outdict['licenses'][0]['path'] = outdict['license_url']
+        outdict['licenses'][0]['path'] = outdict.get('license_url', '') if outdict['license_url'] else ''
         outdict.pop('license_url', None)
 
     for key in dataset_keys_to_remove:
