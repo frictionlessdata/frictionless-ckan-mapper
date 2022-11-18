@@ -189,7 +189,7 @@ def dataset(ckandict):
             outdict['licenses'] = [{}]
             break  # check to create list of dicts only once
     if 'license_id' in outdict:
-        outdict['licenses'][0]['name'] = outdict.get('license_id', '') if outdict['license_id'] else ''
+        outdict['licenses'][0]['name'] = outdict.get('license_id') or ''
         outdict.pop('license_id', None)
     if 'license_title' in outdict:
         outdict['licenses'][0]['title'] = outdict.get('license_title', '') if outdict['license_title'] else ''
