@@ -162,7 +162,7 @@ def dataset(ckandict):
                 'role': 'author'
             }
             if 'author_email' in outdict:
-                contrib['email'] = outdic.get('author_email') or ''
+                contrib['email'] = outdict.get('author_email') or ''
             outdict['contributors'].append(contrib)
         if 'maintainer' in outdict and outdict['maintainer']:
             contrib = {
