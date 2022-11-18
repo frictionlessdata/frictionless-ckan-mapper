@@ -170,7 +170,7 @@ def dataset(ckandict):
                 'role': 'maintainer'
             }
             if 'maintainer_email' in outdict:
-                contrib['email'] = outdict['maintainer_email'] if outdict['maintainer_email'] else ''
+                contrib['email'] = outdict.get('maintainer_email') or ''
             outdict['contributors'].append(contrib)
 
     for key in ['author', 'author_email', 'maintainer', 'maintainer_email']:
@@ -192,10 +192,10 @@ def dataset(ckandict):
         outdict['licenses'][0]['name'] = outdict.get('license_id') or ''
         outdict.pop('license_id', None)
     if 'license_title' in outdict:
-        outdict['licenses'][0]['title'] = outdict.get('license_title', '') if outdict['license_title'] else ''
+        outdict['licenses'][0]['title'] = outdict.get('license_title') or ''
         outdict.pop('license_title', None)
     if 'license_url' in outdict:
-        outdict['licenses'][0]['path'] = outdict.get('license_url', '') if outdict['license_url'] else ''
+        outdict['licenses'][0]['path'] = outdict.get('license_url') or ''
         outdict.pop('license_url', None)
 
     for key in dataset_keys_to_remove:
