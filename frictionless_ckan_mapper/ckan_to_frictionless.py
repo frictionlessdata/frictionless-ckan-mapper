@@ -63,15 +63,23 @@ def resource(ckandict):
                     value = unidecode.unidecode(value)
                 value = value.lower()
                 value = value.strip()
-                value = re.sub('[^[\w|.]+', '-', value)
+                value = re.sub('(\||[^\w|.|\|])+', '-', value)
                 if value == '':
                     value = 'unnamed-resource'
                 resource[key] = value
 
+            if key == 'size':
+                if resource[key]:    
+                    resource[key] = int(resource[key])
+
+            # 'type' must be lower case 
+            if key == 'type':
+                resource[key] = value.lower()
+
     # Remap differences from CKAN to Frictionless resource
     for key, value in resource_mapping.items():
         if key in resource:
-            resource[value] = resource[key]
+            resource[value] = resource[key] 
             del resource[key]
 
     for key in list(resource.keys()):
