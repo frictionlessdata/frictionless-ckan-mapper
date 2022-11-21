@@ -3,6 +3,7 @@ import six
 import json
 import re
 import unidecode
+from collections import defaultdict
 
 try:
     json_parse_exception = json.decoder.JSONDecodeError
@@ -136,18 +137,38 @@ def dataset(ckandict):
     if 'resources' in ckandict:
         outdict['resources'] = [resource(res) for res in
                                 ckandict['resources']]
+    else:
+        outdict['resources'] = []
 
-    for res in outdict.get('resources', []):
+    for res in outdict['resources']:
         if 'name' not in res:
             res['name'] = 'unnamed-resource'
 
     # prevent having multiple unanmed resources with the same name
     # to follow the specs https://specs.frictionlessdata.io/data-resource/#name
     unnamed_num = 1
-    for res in outdict.get('resources', []):
+    for res in outdict['resources']:
         if res['name'] == 'unnamed-resource':
             res['name'] += '-{}'.format(unnamed_num)
             unnamed_num += 1
+
+    # Deal with resources having the same name
+    name_count = defaultdict(int)
+    resources_names = [r['name'] for r in outdict['resources']]
+
+    for name in resources_names:
+        name_count[name] += 1
+
+    name_index = {n:1 for n in name_count.keys()}
+
+    # If a group of resources have the same name
+    # add a count to the name and save the original name in the metadata
+    for res in outdict['resources']:
+        if name_count[res['name']] > 1:
+            res_name = res['name']
+            res['original_name'] = res_name
+            res['name'] = f'{res_name}-{name_index[res_name]}'
+            name_index[res_name] += 1
 
     # tags
     if ckandict.get('tags'):
