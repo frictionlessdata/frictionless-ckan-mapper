@@ -218,14 +218,22 @@ def dataset(ckandict):
             outdict['licenses'] = [{}]
             break  # check to create list of dicts only once
     if 'license_id' in outdict:
-        outdict['licenses'][0]['name'] = outdict.get('license_id') or ''
+        outdict['licenses'][0]['name'] = outdict.get('license_id') or 'no_licerse_name'
         outdict.pop('license_id', None)
+    else:
+        outdict['licenses'][0]['name'] = 'no_license_name'
+
     if 'license_title' in outdict:
-        outdict['licenses'][0]['title'] = outdict.get('license_title') or ''
+        outdict['licenses'][0]['title'] = outdict.get('license_title') or 'no_license_title'
         outdict.pop('license_title', None)
+    else:
+        outdict['licenses'][0]['title'] = 'no_license_title'
+
     if 'license_url' in outdict:
-        outdict['licenses'][0]['path'] = outdict.get('license_url') or ''
+        outdict['licenses'][0]['path'] = outdict.get('license_url') or 'no_path'
         outdict.pop('license_url', None)
+    else:
+        outdict['licenses'][0]['path'] = 'no_license_path'
 
     for key in dataset_keys_to_remove:
         outdict.pop(key, None)
